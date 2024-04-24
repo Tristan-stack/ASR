@@ -1,10 +1,10 @@
 <?php
 include('./include/connexion.php');
-include('./include/entity/asr_users.php');
+include('./include/entity/users.php');
 
 //arborescence : 
 //SDEA/include/connexion.php
-//SDEA/include/entity/asr.php
+//SDEA/include/entity/communes.php
 //SDEA/controleur.php
 //SDEA/templates/home/home.html.twig
 
@@ -29,7 +29,7 @@ class Asr{
     static function readAll(){
         // echo "readAll est appelé";
         // var_dump("readAll est appelé"); 
-        $sql = 'SELECT * FROM asr';
+        $sql = 'SELECT * FROM communes';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute();
@@ -42,7 +42,7 @@ class Asr{
     }
 
     static function readOne($idt_asr){
-        $sql = 'SELECT * FROM asr WHERE idt_asr = :idt_asr';
+        $sql = 'SELECT * FROM communes WHERE idt_asr = :idt_asr';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['idt_asr' => $idt_asr]);
@@ -55,21 +55,21 @@ class Asr{
     }
 
     static function create($nom, $cp){
-        $sql = 'INSERT INTO asr (nom, cp) VALUES (:nom, :cp)';
+        $sql = 'INSERT INTO communes (nom, cp) VALUES (:nom, :cp)';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['nom' => $nom, 'cp' => $cp]);
     }
 
     static function update($idt_asr, $nom, $cp){
-        $sql = 'UPDATE asr SET nom = :nom, cp = :cp WHERE idt_asr = :idt_asr';
+        $sql = 'UPDATE communes SET nom = :nom, cp = :cp WHERE idt_asr = :idt_asr';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['idt_asr' => $idt_asr, 'nom' => $nom, 'cp' => $cp]);
     }
 
     static function delete($idt_asr){
-        $sql = 'DELETE FROM asr WHERE idt_asr = :idt_asr';
+        $sql = 'DELETE FROM communes WHERE idt_asr = :idt_asr';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['idt_asr' => $idt_asr]);

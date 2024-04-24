@@ -1,7 +1,13 @@
 <?php
 session_start();
 
-include('include/entity/asr.php');
+
+include('include/entity/communes.php');
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 
 require 'vendor/autoload.php'; // Inclure l'autoloader Twig
 $loader = new \Twig\Loader\FilesystemLoader('templates');
@@ -21,6 +27,11 @@ else $id = 0;
 
 if (isset($_GET['page'])) $page = $_GET['page'];
 else $page = 'asr';
+
+if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
+    echo "Nom d'utilisateur : " . $_SESSION['username'];
+    echo " compte n° : " . $_SESSION['id'];
+}
 
 
 switch($page){
@@ -102,7 +113,11 @@ switch($page){
                 } elseif (empty($user->username) || empty($user->email) || empty($user->password)) {
                     // Gérer le cas où l'un des champs est vide
                     echo "Tous les champs sont requis.";
+                } elseif (!preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}/", $user->password)) {
+                    // Gérer le cas où le mot de passe ne respecte pas les contraintes
+                    echo "Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial et faire au moins 6 caractères.";
                 } else {
+                    $user->role = 'Gestionnaire';
                     $user->create();
                     // Rediriger vers la page de connexion après la création de l'utilisateur
                     header('Location: controleur.php?page=user&action=login');
@@ -110,38 +125,33 @@ switch($page){
                 }
                 break; 
 
-                case 'login':
-                    $template = 'user/connexion.html.twig';
-                    $data = ['action' => 'login'];
-                    $errorMessageLog = ""; 
-                    if (isset($_POST["submit"])) {
-                        if (empty($_POST["username"]) || empty($_POST["password"])) {
-                            $errorMessageLog = "Veuillez remplir chaque champ.";
-                        } else {
-                            $user = new User();
-                            $user->chargePOST();
-                            // Vérifiez si l'utilisateur existe dans la base de données
-                            if ($user = User::authenticate($user->username, $user->password)) {
-                                var_dump($user);
-                                // Si l'utilisateur existe, stocker son pseudo dans la session et rediriger vers la page d'accueil
-                                $_SESSION['username'] = $_POST["username"];
-                                $_SESSION['id'] = $user->id; 
-                                $_SESSION['email'] = $user->email;
-                                $_SESSION['date_last_action'] = $user->date_last_action;
-                                $_SESSION['date_last_connexion'] = $user->date_last_connexion;
-                                $_SESSION['role'] = $user->role;
-                
-                                echo "L'ID du compte connecté est : " . $_SESSION['id'];
-                                header('Location: controleur.php?page=accueil');
-                                
-                            } else {
-                                $errorMessageLog = "Pseudo ou mot de passe incorrect.";
-                            }
-                        }
+            case 'login':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $user = new User();
+                    $user->chargePOST();
+                    if ($user->login()) {
+                        // L'utilisateur est connecté, stocker ses informations dans la session
+                        $_SESSION['username'] = $user->username;
+                        $_SESSION['id'] = $user->id;
+                        // Rediriger vers la page d'accueil après la connexion
+                        header('Location: controleur.php?page=home');
+                        exit();
+                    } else {
+                        // Les informations de connexion sont incorrectes
+                        echo "Nom d'utilisateur ou mot de passe incorrect.";
                     }
-                    
-                    $data = array_merge($data,['errorMessageLog' => $errorMessageLog]);
-                    break;
+                } else {
+                    // Afficher le formulaire de connexion
+                    $template = 'user/connexion.html.twig';
+                    $data = [];
+                }
+                break;  
+                
+            case 'logout':
+                session_destroy();
+                header('Location: controleur.php?page=home');
+                exit();
+                break;
             
             case 'delete':
                 $id = $_GET['id'];
@@ -157,5 +167,6 @@ switch($page){
         $data = [];
         break;
 }
-// var_dump($data);
+
+$data['session'] = $_SESSION; // Ajoutez cette ligne ici
 echo $twig->render($template, $data);

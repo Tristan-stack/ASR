@@ -21,7 +21,7 @@ class User{
     }
 
     static function readAll(){
-        $sql = 'SELECT * FROM asr_users';
+        $sql = 'SELECT * FROM users';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute();
@@ -33,7 +33,7 @@ class User{
     }
 
     static function readOne($id){
-        $sql = 'SELECT * FROM asr_users WHERE id = :id';
+        $sql = 'SELECT * FROM users WHERE id = :id';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['id' => $id]);
@@ -46,15 +46,12 @@ class User{
 
     function create(){
         $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
-        
-        // Assurez-vous que les autres propriétés de l'utilisateur sont initialisées
-        // (role)
-        
+    
         // Générez la date au format approprié
         $dateLastAction = date('Y-m-d H:i:s'); // Remplacez cette valeur par la date souhaitée
         $dateLastConnexion = date('Y-m-d H:i:s'); // Remplacez cette valeur par la date souhaitée
         
-        $sql = 'INSERT INTO asr_users (username, email, password, date_last_action, date_last_connexion, role) VALUES (:username,:email, :password, :date_last_action, :date_last_connexion, :role)';
+        $sql = 'INSERT INTO users (username, email, password, date_last_action, date_last_connexion, role) VALUES (:username,:email, :password, :date_last_action, :date_last_connexion, :role)';
         
         $pdo = connexion();
         $query = $pdo->prepare($sql);
@@ -73,21 +70,21 @@ class User{
     static function update($id, $username, $email, $password, $date_last_action, $date_last_connexion, $role){
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     
-        $sql = 'UPDATE asr_users SET username = :username, email = :email, password = :password, date_last_action = :date_last_action, date_last_connexion = :date_last_connexion, role = :role WHERE id = :id';
+        $sql = 'UPDATE users SET username = :username, email = :email, password = :password, date_last_action = :date_last_action, date_last_connexion = :date_last_connexion, role = :role WHERE id = :id';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['id' => $id, 'username'=> $username, 'email' => $email, 'password' => $hashedPassword, 'date_last_action' => $date_last_action, 'date_last_connexion' => $date_last_connexion, 'role' => $role]);
     }
 
     static function delete($id){
-        $sql = 'DELETE FROM asr_users WHERE id = :id';
+        $sql = 'DELETE FROM users WHERE id = :id';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['id' => $id]);
     }
 
     public static function emailExists($email) {
-        $sql = 'SELECT * FROM asr_users WHERE email = :email';
+        $sql = 'SELECT * FROM users WHERE email = :email';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->bindValue(':email', $email, PDO::PARAM_STR);
@@ -102,7 +99,7 @@ class User{
     }
 
     public static function usernameExists($username) {
-        $sql = 'SELECT * FROM asr_users WHERE username = :username';
+        $sql = 'SELECT * FROM users WHERE username = :username';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->bindValue(':username', $username, PDO::PARAM_STR);
@@ -115,24 +112,33 @@ class User{
             return false;
         }
     }
-
-
-    static function readByUsername($username){
-        $sql = 'SELECT * FROM asr_users WHERE username = :username';
+    
+    function login(){
+        echo "La méthode login est appelée."; 
+        // var_dump($this->username);
+        // var_dump($this->password);
+        $sql = 'SELECT * FROM users WHERE username = :username';
         $pdo = connexion();
+        // var_dump($pdo);
         $query = $pdo->prepare($sql);
-        $query->execute(['username' => $username]);
+        $query->bindValue(':username', $this->username, PDO::PARAM_STR);
+        $query->execute();
+        $userData = $query->fetch(PDO::FETCH_ASSOC);
+        // var_dump($userData);
         
-        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'User');
-        
-        $user = $query->fetch();
-        return $user;
-    }
-
-    public static function authenticate($username, $password) {
-        $user = self::readByUsername($username);
-        if ($user && password_verify($password, $user->password)) {
-            return $user;
+        // Vérifiez le mot de passe avec password_verify()
+        if ($userData && password_verify($this->password, $userData['password'])) {
+            // Si le mot de passe est correct, stockez les données de l'utilisateur dans l'objet User
+            $this->id = $userData['id'];
+            $this->username = $userData['username'];
+            $this->email = $userData['email'];
+            $this->date_last_action = $userData['date_last_action'];
+            $this->date_last_connexion = $userData['date_last_connexion'];
+            $this->role = $userData['role'];
+    
+            // var_dump($this);
+    
+            return true;
         } else {
             return false;
         }

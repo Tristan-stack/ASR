@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<form action="controleur.php?page=user&action=login" method="post" autocomplete="off">
+<form action="controleur.php?page=user&action=login" method="post">
     <label for="username">Nom d'utilisateur:</label>
     <input type="text" id="username" name="username" required>
     
@@ -10,6 +10,7 @@
     
     <input type="submit" value="Se connecter">
 </form>
+
 {% if errorMessageLog is defined %}
     <p>{{ errorMessageLog }}</p>
 {% endif %}
