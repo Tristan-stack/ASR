@@ -1,0 +1,92 @@
+<?php
+include('./include/connexion.php');
+include('./include/entity/asr_users.php');
+
+//arborescence : 
+//SDEA/include/connexion.php
+//SDEA/include/entity/asr.php
+//SDEA/controleur.php
+//SDEA/templates/home/home.html.twig
+
+//si le include a reussi et que le fichier trouvé alor echo
+if (file_exists('./include/connexion.php')) {
+    echo 'Le fichier connexion a été trouvé.';
+} else {
+    echo 'Le fichier n\'a pas été trouvé.';
+}
+
+class Asr{
+    public $idt_asr;
+    public $nom;
+    public $cp;
+
+    function __construct($idt_asr = null, $nom = null, $cp = null) {
+        $this->idt_asr = $idt_asr !== null ? intval($idt_asr) : null;
+        $this->nom = $nom;
+        $this->cp = $cp;
+    }
+
+    static function readAll(){
+        // echo "readAll est appelé";
+        // var_dump("readAll est appelé"); 
+        $sql = 'SELECT * FROM asr';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        
+        // Ajoutez cette ligne ici
+        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Asr');
+        
+        $tableau = $query->fetchAll();
+        return $tableau;
+    }
+
+    static function readOne($idt_asr){
+        $sql = 'SELECT * FROM asr WHERE idt_asr = :idt_asr';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['idt_asr' => $idt_asr]);
+        
+        // Ajoutez cette ligne ici
+        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Asr');
+        
+        $asr = $query->fetch();
+        return $asr;
+    }
+
+    static function create($nom, $cp){
+        $sql = 'INSERT INTO asr (nom, cp) VALUES (:nom, :cp)';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['nom' => $nom, 'cp' => $cp]);
+    }
+
+    static function update($idt_asr, $nom, $cp){
+        $sql = 'UPDATE asr SET nom = :nom, cp = :cp WHERE idt_asr = :idt_asr';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['idt_asr' => $idt_asr, 'nom' => $nom, 'cp' => $cp]);
+    }
+
+    static function delete($idt_asr){
+        $sql = 'DELETE FROM asr WHERE idt_asr = :idt_asr';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['idt_asr' => $idt_asr]);
+    }
+
+    function chargePOST(){
+        if(isset($_POST['nom'])){
+            $this->nom = $_POST['nom'];
+        } else {
+            $this->nom = '';
+        }
+
+        if(isset($_POST['cp'])){
+            $this->cp = $_POST['cp'];
+        } else {
+            $this->cp = '';
+        }
+    }
+
+}

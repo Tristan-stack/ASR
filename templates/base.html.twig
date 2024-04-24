@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Titre par défaut{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+
+    </head>
+    <body>
+        <header>
+            {# lien nav permetant de joindre les diffentes pages #}
+            <nav>
+                <ul>
+                    <li><a href="controleur.php?page=home">Accueil</a></li>
+                    <li><a href="controleur.php?page=asr&action=read">Liste communes</a></li>
+                    <li><a href="controleur.php?page=user&action=read">Voir les comptes</a></li>
+                    {% if session.user is defined %}
+                        <li><a href="controleur.php?page=user&action=logout">Déconnexion</a></li>
+                    {% else %}
+                        <li><a href="controleur.php?page=user&action=create">Inscription</a></li>
+                        <li><a href="controleur.php?page=user&action=login">Connexion</a></li>
+                    {% endif %}
+                </ul>
+        </header>
+
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer>
+            {% block footer %}{% endblock %}
+        </footer>
+
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

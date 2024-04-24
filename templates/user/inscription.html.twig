@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<form action="controleur.php?page=user&action=create" method="post">
+    
+    <label for="username">Nom d'utilisateur:</label>
+    <input type="text" id="username" name="username" required>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    
+    <label for="password">Mot de passe:</label>
+    <input type="password" id="password" name="password" required>
+    
+    <input type="submit" value="S'inscrire">
+</form>
+
+{# lien retourner a la page d'accueil #}
+
+<a href="controleur.php?page=home">Retour à l'accueil</a>
+    
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste communes</h1>
+    <form method="get">
+        <label for="nom">Nom :</label>
+        <input type="text" id="nom" name="nom" value="{{ app.request.get('nom') }}">
+        <label for="cp">Code Postal :</label>
+        <input type="text" id="cp" name="cp" value="{{ app.request.get('cp') }}">
+        <label for="order">Trier par :</label>
+        <select id="order" name="order">
+            <option value="">Aucun</option>
+            <option value="asc" {% if app.request.get('order') == 'asc' %}selected{% endif %}>Alphabétique</option>
+            <option value="desc" {% if app.request.get('order') == 'desc' %}selected{% endif %}>Inverse alphabétique</option>
+        </select>
+        <input type="submit" value="Filtrer">
+        <button type="submit" name="reset" value="1">Réinitialiser</button>
+    </form> 
+    <ul>
+        {% for item in asr %}
+        <li>Nom : <a href="controleur.php?page=asr&id={{ item.idt_asr }}">{{ item.nom }}</a> , Code Postal : {{ item.cp }}</li>
+        {% else %}
+            <li>Aucune commune trouvée</li>
+        {% endfor %}
+        {{ "Le template est chargé." }}
+    </ul>
+{% endblock %}

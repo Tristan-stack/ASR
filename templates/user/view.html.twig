@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Bienvenue sur la liste des comptes</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                {# <th>Roles</th> #}
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    {# <td>{{ user.roles|json_encode }}</td> #}
+                    <td>
+                        {# <a href="{{ path('user_view', {'id': user.id}) }}">Voir</a>
+                        <a href="{{ path('user_edit', {'id': user.id}) }}">Modifier</a> #}
+                        <a href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+{% endblock %}
