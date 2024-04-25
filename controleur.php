@@ -101,29 +101,24 @@ switch($page){
                
             case 'create':
                 $template = 'user/inscription.html.twig';
-                $data = [];
                 $user = new User();
+                $roles = $user->getRoles(); // Récupérer les rôles
+                $data = ['roles' => $roles]; // Passer les rôles à la vue
                 $user->chargePOST();
                 if (User::emailExists($user->email)) {
-                    // Gérer le cas où l'email existe déjà
                     echo "Email déjà utilisé.";
                 } elseif (User::usernameExists($user->username)) {
-                    // Gérer le cas où le username existe déjà
-                     echo "Nom d'utilisateur déjà utilisé.";
-                } elseif (empty($user->username) || empty($user->email) || empty($user->password)) {
-                    // Gérer le cas où l'un des champs est vide
+                    echo "Nom d'utilisateur déjà utilisé.";
+                } elseif (empty($user->username) || empty($user->email) || empty($user->password) || empty($user->role_id)) {
                     echo "Tous les champs sont requis.";
                 } elseif (!preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}/", $user->password)) {
-                    // Gérer le cas où le mot de passe ne respecte pas les contraintes
                     echo "Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial et faire au moins 6 caractères.";
                 } else {
-                    $user->role = 'Gestionnaire';
                     $user->create();
-                    // Rediriger vers la page de connexion après la création de l'utilisateur
                     header('Location: controleur.php?page=user&action=login');
                     exit();
                 }
-                break; 
+                break;
 
             case 'login':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -133,6 +128,7 @@ switch($page){
                         // L'utilisateur est connecté, stocker ses informations dans la session
                         $_SESSION['username'] = $user->username;
                         $_SESSION['id'] = $user->id;
+                        $_SESSION['role_id'] = $user->role_id;
                         // Rediriger vers la page d'accueil après la connexion
                         header('Location: controleur.php?page=home');
                         exit();
@@ -147,11 +143,42 @@ switch($page){
                 }
                 break;  
                 
+            case 'update':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $user = User::readOne($id);
+                    $user->chargePOST();
+                    $newValues = [];
+                    if (!empty($user->username)) {
+                        $newValues['username'] = $user->username;
+                        $_SESSION['username'] = $user->username;
+                    }
+                    if (!empty($user->email)) {
+                        $newValues['email'] = $user->email;
+                        $_SESSION['email'] = $user->email;
+                    }
+                    if (!empty($user->role_id)) {
+                        $newValues['role_id'] = $user->role_id;
+                        $_SESSION['role_id'] = $user->role_id;
+                    }
+                    if (!empty($newValues)) {
+                        User::update($id, $newValues);
+                        header('Location: controleur.php?page=user&action=read&id=' . $user->id);
+                        exit();
+                    }
+                } else {
+                    $user = User::readOne($id);
+                    $roles = $user->getRoles();
+                    $template = 'user/update.html.twig';
+                    $data = ['user' => $user, 'roles' => $roles];
+                }
+                break;
+            
             case 'logout':
                 session_destroy();
                 header('Location: controleur.php?page=home');
                 exit();
                 break;
+            
             
             case 'delete':
                 $id = $_GET['id'];

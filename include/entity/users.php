@@ -8,16 +8,16 @@ class User{
     public $password;
     public $date_last_action;
     public $date_last_connexion;
-    public $role;
+    public $role_id;
 
-    function __construct($id = null, $username = null, $email = null, $password = null, $date_last_action = null, $date_last_connexion = null, $role = null) {
+    function __construct($id = null, $username = null, $email = null, $password = null, $date_last_action = null, $date_last_connexion = null, $role_id = null) { // Changed $role to $role_id
         $this->id = $id !== null ? intval($id) : null;
         $this->username = $username;
         $this->email = $email;
         $this->password = $password;
         $this->date_last_action = $date_last_action;
         $this->date_last_connexion = $date_last_connexion;
-        $this->role = $role;
+        $this->role_id = $role_id;
     }
 
     static function readAll(){
@@ -47,33 +47,44 @@ class User{
     function create(){
         $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
     
-        // Générez la date au format approprié
-        $dateLastAction = date('Y-m-d H:i:s'); // Remplacez cette valeur par la date souhaitée
-        $dateLastConnexion = date('Y-m-d H:i:s'); // Remplacez cette valeur par la date souhaitée
+        // Generate the date in the appropriate format
+        $dateLastAction = date('Y-m-d H:i:s'); // Replace this value with the desired date
+        $dateLastConnexion = date('Y-m-d H:i:s'); // Replace this value with the desired date
         
-        $sql = 'INSERT INTO users (username, email, password, date_last_action, date_last_connexion, role) VALUES (:username,:email, :password, :date_last_action, :date_last_connexion, :role)';
+        $sql = 'INSERT INTO users (username, email, password, date_last_action, date_last_connexion, role_id) VALUES (:username,:email, :password, :date_last_action, :date_last_connexion, :role_id)'; // Changed :role to :role_id
         
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->bindValue(':username', $this->username, PDO::PARAM_STR);
         $query->bindValue(':email', $this->email, PDO::PARAM_STR);
-        $query->bindValue(':password', $hashedPassword, PDO::PARAM_STR); // Utilisez le mot de passe haché
-        $query->bindValue(':date_last_action', $dateLastAction, PDO::PARAM_STR); // Utilisez la date formatée
-        $query->bindValue(':date_last_connexion', $dateLastConnexion, PDO::PARAM_STR); // Utilisez la date formatée
-        $query->bindValue(':role', $this->role, PDO::PARAM_STR);
+        $query->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
+        $query->bindValue(':date_last_action', $dateLastAction, PDO::PARAM_STR); 
+        $query->bindValue(':date_last_connexion', $dateLastConnexion, PDO::PARAM_STR); 
+        $query->bindValue(':role_id', $this->role_id, PDO::PARAM_INT); 
         $query->execute();
         $this->id = $pdo->lastInsertId();
     }
     
 
 
-    static function update($id, $username, $email, $password, $date_last_action, $date_last_connexion, $role){
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    static function update($id, $newValues){ 
+        $user = self::readOne($id);
+        if (!$user) {
+            // Handle error - user not found
+            return;
+        }
     
-        $sql = 'UPDATE users SET username = :username, email = :email, password = :password, date_last_action = :date_last_action, date_last_connexion = :date_last_connexion, role = :role WHERE id = :id';
+        $username = array_key_exists('username', $newValues) ? $newValues['username'] : $user->username;
+        $email = array_key_exists('email', $newValues) ? $newValues['email'] : $user->email;
+        $password = array_key_exists('password', $newValues) ? password_hash($newValues['password'], PASSWORD_DEFAULT) : $user->password;
+        $date_last_action = array_key_exists('date_last_action', $newValues) ? $newValues['date_last_action'] : $user->date_last_action;
+        $date_last_connexion = array_key_exists('date_last_connexion', $newValues) ? $newValues['date_last_connexion'] : $user->date_last_connexion;
+        $role_id = array_key_exists('role_id', $newValues) ? $newValues['role_id'] : $user->role_id;
+    
+        $sql = 'UPDATE users SET username = :username, email = :email, password = :password, date_last_action = :date_last_action, date_last_connexion = :date_last_connexion, role_id = :role_id WHERE id = :id'; 
         $pdo = connexion();
         $query = $pdo->prepare($sql);
-        $query->execute(['id' => $id, 'username'=> $username, 'email' => $email, 'password' => $hashedPassword, 'date_last_action' => $date_last_action, 'date_last_connexion' => $date_last_connexion, 'role' => $role]);
+        $query->execute(['id' => $id, 'username'=> $username, 'email' => $email, 'password' => $password, 'date_last_action' => $date_last_action, 'date_last_connexion' => $date_last_connexion, 'role_id' => $role_id]); 
     }
 
     static function delete($id){
@@ -134,7 +145,7 @@ class User{
             $this->email = $userData['email'];
             $this->date_last_action = $userData['date_last_action'];
             $this->date_last_connexion = $userData['date_last_connexion'];
-            $this->role = $userData['role'];
+            $this->role_id = $userData['role_id'];
     
             // var_dump($this);
     
@@ -142,6 +153,33 @@ class User{
         } else {
             return false;
         }
+    }
+
+    function getRole(){
+        $sql = 'SELECT roles.role FROM roles WHERE id = :id'; 
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->bindValue(':id', $this->role_id, PDO::PARAM_INT); 
+        $query->execute();
+        
+        $roleData = $query->fetch(PDO::FETCH_ASSOC);
+        
+        if ($roleData) {
+            return $roleData['role']; 
+        } else {
+            return null;
+        }
+    }
+
+    function getRoles(){
+        $sql = 'SELECT * FROM roles';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        
+        $roles = $query->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $roles;
     }
 
     function chargePOST(){
@@ -179,10 +217,10 @@ class User{
             $this->date_last_connexion = '';
         }
 
-        if(isset($_POST['role'])){
-            $this->role = $_POST['role'];
+        if(isset($_POST['role_id'])){ 
+            $this->role_id = $_POST['role_id']; 
         } else {
-            $this->role = '';
+            $this->role_id = ''; 
         }
     }
 }

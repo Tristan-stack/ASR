@@ -13,16 +13,19 @@
         </thead>
         <tbody>
             {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.email }}</td>
-                    {# <td>{{ user.roles|json_encode }}</td> #}
-                    <td>
-                        {# <a href="{{ path('user_view', {'id': user.id}) }}">Voir</a>
-                        <a href="{{ path('user_edit', {'id': user.id}) }}">Modifier</a> #}
-                        <a href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
-                    </td>
-                </tr>
+                {% if user.id != session.id %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if session.role_id == 1 %}
+                                <a href="controleur.php?page=user&action=update&id={{user.id}}">Modifier</a>
+                                <a href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
+        <h3><a href="controleur.php?page=user&action=create">Ajouter</a> un utilisateur</h3>
 {% endblock %}
