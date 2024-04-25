@@ -9,13 +9,21 @@
     
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" value="@sdea.fr" pattern=".+@sdea\.fr$" required>
+
+    <label for="role_id">Rôle:</label>
+    <select name="role_id">
+        <option selected disabled>Choisissez le rôle</option>
+        {% for role in roles %}
+            <option value="{{ role.id }}">{{ role.role }}</option>
+        {% endfor %}
+    </select>
     
     <label for="password">Mot de passe:</label>
     <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" required>
-    <p id="passwordLengthCondition" style="color: red;">Doit contenir au moins 6 caractères.</p>
-    <p id="passwordUppercaseCondition" style="color: red;">Doit contenir au moins une majuscule.</p>
-    <p id="passwordNumberCondition" style="color: red;">Doit contenir au moins un chiffre.</p>
-    <p id="passwordSpecialCondition" style="color: red;">Doit contenir au moins un caractère spécial.</p>
+    <p id="passwordLengthCondition" style="color: red;">6 caractères.</p>
+    <p id="passwordUppercaseCondition" style="color: red;">Une majuscule.</p>
+    <p id="passwordNumberCondition" style="color: red;">1 chiffre.</p>
+    <p id="passwordSpecialCondition" style="color: red;">1 caractère spécial.</p>
     
     <input type="submit" value="S'inscrire">
 </form>

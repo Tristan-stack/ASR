@@ -13,11 +13,12 @@
                 <ul>
                     <li><a href="controleur.php?page=home">Accueil</a></li>
                     <li><a href="controleur.php?page=asr&action=read">Liste communes</a></li>
+                    {% if session.role_id == 1 %}
                     <li><a href="controleur.php?page=user&action=read">Voir les comptes</a></li>
+                    {% endif %}
                     {% if session.username is defined %}
                         <li><a href="controleur.php?page=user&action=logout">Déconnexion</a></li>
                     {% else %}
-                    <li><a href="controleur.php?page=user&action=create">Inscription</a></li>
                         <li><a href="controleur.php?page=user&action=login">Connexion</a></li>
                     {% endif %}
                 </ul>
