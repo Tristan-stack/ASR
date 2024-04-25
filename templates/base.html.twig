@@ -13,8 +13,10 @@
                 <ul>
                     <li><a href="controleur.php?page=home">Accueil</a></li>
                     <li><a href="controleur.php?page=asr&action=read">Liste communes</a></li>
+                    <li><a href="controleur.php?page=documents&action=read">Liste documents</a></li>
                     {% if session.role_id == 1 %}
-                    <li><a href="controleur.php?page=user&action=read">Voir les comptes</a></li>
+                    <li><a href="controleur.php?page=admin&action=read">back-office</a></li>
+                    {# <li><a href="controleur.php?page=user&action=read">Voir les comptes</a></li> #}
                     {% endif %}
                     {% if session.username is defined %}
                         <li><a href="controleur.php?page=user&action=logout">Déconnexion</a></li>

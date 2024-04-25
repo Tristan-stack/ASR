@@ -7,4 +7,10 @@
     <p>Code Postal : {{ asr.cp }}</p>
 
     <h2>Rapports associé à cette commune :</h2>
+
+    {% for document in documents %}
+        <ul>
+            <li>{{ document.titre }}</li>
+        </ul>
+    {% endfor %}
 {% endblock %}

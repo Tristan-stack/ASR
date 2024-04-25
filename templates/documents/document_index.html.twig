@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste doc</h1>
+    {# boucle pour afficher les documents #}
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                {# <th>Actions</th> #}
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+                <tr>
+                    <td>{{ document.idt_doc }}</td>
+                    <td>{{ document.titre }}</td>
+                    {# <td>
+                        <a href="controleur.php?page=documents&action=update&id={{document.id}}">Modifier</a>
+                        <a href="controleur.php?page=documents&action=delete&id={{document.id}}">Supprimer</a>
+                    </td> #}
+                </tr>
+            {% endfor %}
+        </tbody>
+        {# <h3><a href="controleur.php?page=documents&action=create">Ajouter</a> un document</h3> #}
+
+
+{% endblock %}

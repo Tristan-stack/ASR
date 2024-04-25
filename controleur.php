@@ -42,14 +42,15 @@ switch($page){
     case 'asr':
         if ($id > 0) {
             $asr = Asr::readOne($id);
-            $template = 'asr/asr_show.html.twig';
-            $data = ['asr' => $asr];
+            $documents = Documents::readDocByCommune($id);
+            $template = 'communes/commune_show.html.twig';
+            $data = ['asr' => $asr, 'documents' => $documents]; 
             break;
         } else {
             $asr = Asr::readAll();
         
             if (isset($_REQUEST['reset'])) {
-                $template = 'asr/asr_index.html.twig';
+                $template = 'communes/commune_index.html.twig';
                 $data = ['asr' => $asr];
                 break;
             }
@@ -77,7 +78,7 @@ switch($page){
                 });
             }
         
-            $template = 'asr/asr_index.html.twig';
+            $template = 'communes/commune_index.html.twig';
             $data = ['asr' => $asr];
             break;
         }
@@ -185,6 +186,32 @@ switch($page){
                 User::delete($id);
                 header('Location: controleur.php?page=user&action=read');
                 exit();
+                break;
+        }
+        break;
+
+    case 'admin':
+        switch($action){
+            case 'read':
+                $users = User::readAll();
+                $template = 'admin/back-office.html.twig';
+                $data = ['users' => $users];
+                break;
+        }
+        break;
+
+    case 'documents':
+        switch($action){
+            case 'read':
+                if ($id > 0) {
+                    $documents = Documents::readOne($id);
+                    $template = 'documents/document_detail.html.twig';
+                    $data = ['documents' => $documents];
+                } else {
+                    $documents = Documents::readAll();
+                    $template = 'documents/document_index.html.twig';
+                    $data = ['documents' => $documents];
+                }
                 break;
         }
         break;

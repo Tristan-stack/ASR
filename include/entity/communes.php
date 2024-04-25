@@ -1,6 +1,7 @@
 <?php
 include('./include/connexion.php');
 include('./include/entity/users.php');
+include('./include/entity/documents.php');
 
 //arborescence : 
 //SDEA/include/connexion.php
