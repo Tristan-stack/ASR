@@ -202,8 +202,36 @@ switch($page){
         switch($action){
             case 'read':
                 $users = User::readAll();
+                $user = new User();
+                $roles = $user->getRoles(); // Récupérer les rôles
                 $template = 'admin/back-office.html.twig';
-                $data = ['users' => $users];
+                $data = ['users' => $users, 'roles' => $roles]; // Passer les rôles à la vue
+                break;
+            case 'update':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $user = User::readOne($id);
+                    $user->chargePOST();
+                    $newValues = [];
+                    if (!empty($user->username)) {
+                        $newValues['username'] = $user->username;
+                    }
+                    if (!empty($user->email)) {
+                        $newValues['email'] = $user->email;
+                    }
+                    if (!empty($user->role_id)) {
+                        $newValues['role_id'] = $user->role_id;
+                    }
+                    if (!empty($newValues)) {
+                        User::update($id, $newValues);
+                        header('Location: controleur.php?page=admin&action=read');
+                        exit();
+                    }
+                } else {
+                    $user = User::readOne($id);
+                    $roles = $user->getRoles();
+                    $template = 'admin/update.html.twig';
+                    $data = ['user' => $user, 'roles' => $roles];
+                }
                 break;
         }
         break;

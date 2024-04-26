@@ -13,6 +13,8 @@
             <tr>
                 <th>Id</th>
                 <th>Email</th>
+                <th>Username</th>
+                <th>Role</th>
                 {# <th>Roles</th> #}
             </tr>
         </thead>
@@ -20,12 +22,22 @@
             {% for user in users %}
                 {% if user.id != session.id %}
                     <tr>
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.email }}</td>
+                        <td class="editable" data-id="{{ user.id }}" data-field="id">{{ user.id }}</td>
+                        <td class="editable" data-id="{{ user.id }}" data-field="email">{{ user.email }}</td>
+                        <td class="editable" data-id="{{ user.id }}" data-field="username">{{ user.username }}</td>
+                        <td>
+                            <select class="role-select" data-id="{{ user.id }}" data-field="role_id">
+                                <option selected disabled>Choisissez le rôle</option>
+                                {% for role in roles %}
+                                    <option value="{{ role.id }}" {% if role.id == user.role_id %}selected{% endif %}>{{ role.role }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
                         <td>
                             {% if session.role_id == 1 %}
-                                <a href="controleur.php?page=user&action=update&id={{user.id}}">Modifier</a>
+                                <button class="save-btn" data-id="{{ user.id }}">Valider</button>
                                 <a href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
+                                <p class="message" data-id="{{ user.id }}" style="display: none;"></p> <!-- Ajouté -->
                             {% endif %}
                         </td>
                     </tr>
@@ -44,31 +56,78 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $("#link1").click(function(){
-                $("#content1").show();
-                $("#content2").hide();
-                $("#content3").hide();
-                $(".active").removeClass("active");
-                $(this).addClass("active");
+<script>
+    $(document).ready(function(){
+        $("#link1").click(function(){
+            $("#content1").show();
+            $("#content2").hide();
+            $("#content3").hide();
+            $(".active").removeClass("active");
+            $(this).addClass("active");
+        });
+    
+        $("#link2").click(function(){
+            $("#content1").hide();
+            $("#content2").show();
+            $("#content3").hide();
+            $(".active").removeClass("active");
+            $(this).addClass("active");
+        });
+    
+        $("#link3").click(function(){
+            $("#content1").hide();
+            $("#content2").hide();
+            $("#content3").show();
+            $(".active").removeClass("active");
+            $(this).addClass("active");
+        });
+    
+        $(".editable").click(function(){
+            $(this).attr('contenteditable', 'true');
+        });
+    
+        $(".editable").on('input', function(){
+            var id = $(this).data('id');
+            $('.message[data-id="' + id + '"]').text("N'oubliez pas de valider les modifications !").show();
+        });
+    
+        $(".role-select").change(function(){
+            var id = $(this).data('id');
+            $('.message[data-id="' + id + '"]').text("N'oubliez pas de valider les modifications !").show();
+        });
+    
+        $(".save-btn").click(function(){
+            var id = $(this).data('id');
+            var data = {};
+            $('.editable[data-id="' + id + '"]').each(function() {
+                var field = $(this).data('field');
+                data[field] = $(this).text();
             });
-
-            $("#link2").click(function(){
-                $("#content1").hide();
-                $("#content2").show();
-                $("#content3").hide();
-                $(".active").removeClass("active");
-                $(this).addClass("active");
+            $('.role-select[data-id="' + id + '"]').each(function() {
+                var field = $(this).data('field');
+                data[field] = $(this).val();
             });
-
-            $("#link3").click(function(){
-                $("#content1").hide();
-                $("#content2").hide();
-                $("#content3").show();
-                $(".active").removeClass("active");
-                $(this).addClass("active");
+    
+            $.ajax({
+                url: 'controleur.php?page=admin&action=update&id=' + id,
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    $('.message[data-id="' + id + '"]').hide();
+                    Toastify({
+                        text: "Modifications enregistrées avec succès !",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: 'center', 
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }).showToast();
+                },
+                error: function(response) {
+                 
+                }
             });
         });
-    </script>
+    });
+</script>
 {% endblock %}
