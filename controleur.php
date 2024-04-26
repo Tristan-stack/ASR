@@ -144,6 +144,7 @@ switch($page){
                 }
                 break;  
                 
+                
             case 'update':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $user = User::readOne($id);
@@ -151,15 +152,21 @@ switch($page){
                     $newValues = [];
                     if (!empty($user->username)) {
                         $newValues['username'] = $user->username;
-                        $_SESSION['username'] = $user->username;
+                        if ($_SESSION['role_id'] !== 1) { // Check if the current user is not an admin
+                            $_SESSION['username'] = $user->username;
+                        }
                     }
                     if (!empty($user->email)) {
                         $newValues['email'] = $user->email;
-                        $_SESSION['email'] = $user->email;
+                        if ($_SESSION['role_id'] !== 1) { // Check if the current user is not an admin
+                            $_SESSION['email'] = $user->email;
+                        }
                     }
                     if (!empty($user->role_id)) {
                         $newValues['role_id'] = $user->role_id;
-                        $_SESSION['role_id'] = $user->role_id;
+                        if ($_SESSION['role_id'] !== 1 ) { // Check if the current user is not an admin
+                            $_SESSION['role_id'] = $user->role_id;
+                        }
                     }
                     if (!empty($newValues)) {
                         User::update($id, $newValues);
@@ -173,6 +180,7 @@ switch($page){
                     $data = ['user' => $user, 'roles' => $roles];
                 }
                 break;
+                
             
             case 'logout':
                 session_destroy();
