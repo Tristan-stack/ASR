@@ -3,7 +3,21 @@
 {% block body %}
     <h1>Liste doc</h1>
 
-    <!-- Ajoutez ce formulaire de recherche -->
+    <!-- Ajoutez ce formulaire pour choisir le nombre de documents par page -->
+    <form method="POST" action="controleur.php?page=documents&action=read">
+        <label for="limit">Documents par page :</label>
+        <select id="limit" name="limit">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+        <label for="page">Page :</label>
+        <input type="number" id="page" name="page" min="1" value="1">
+        <input type="submit" value="Appliquer">
+    </form>
+
+    <!-- Formulaire de recherche -->
     <input type="text" id="search" placeholder="Rechercher...">
 
     {% for category_name, documents in documentsByCategory %}

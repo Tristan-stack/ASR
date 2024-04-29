@@ -42,7 +42,7 @@ switch($page){
     case 'asr':
         if ($id > 0) {
             $asr = Asr::readOne($id);
-            $documents = Documents::readDocByCommune($id);
+            // $documents = Documents::readDocByCommune($id);
     
             // Regrouper les documents par catégorie
             $documentsByCategory = [];
@@ -253,20 +253,21 @@ switch($page){
                     $template = 'documents/document_detail.html.twig';
                     $data = ['documents' => $documents, 'communes' => $communes];
                 } else {
-                    $documents = Documents::readAll();
+                    $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
+                    $limit = isset($_POST['limit']) ? (int)$_POST['limit'] : 10;
+                    $action = isset($_POST['action']) ? $_POST['action'] : 'read';
+                    $documents = Documents::readAll($page, $limit);
                     $documentsByCategory = [];
                     foreach ($documents as $document) {
-                        $category = Categories::readOne($document->type_doc);
-                        if ($category !== null) {
-                            $documentsByCategory[$category->label_type_doc][] = $document;
+                        $categoryLabel = $document->label_type_doc;
+                        if ($categoryLabel !== null) {
+                            $documentsByCategory[$categoryLabel][] = $document;
                         } else {
-                            // Handle the case where $document->type_doc does not correspond to a category
-                            // For example, you could add the document to a special "Uncategorized" category:
                             $documentsByCategory['Uncategorized'][] = $document;
                         }
                     }
                     $template = 'documents/document_index.html.twig';
-                    $data = ['documentsByCategory' => $documentsByCategory];
+                    $data = ['documentsByCategory' => $documentsByCategory, 'limit' => $limit, 'page' => $page];
                 }
                 break;
         }

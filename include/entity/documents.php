@@ -7,6 +7,7 @@ class Documents{
     public $link;
     public $type_doc;
     public $date_doc;
+    public $label_type_doc;
 
     function __construct($idt_doc = null, $titre = null, $link = null, $type_doc = null, $date_doc = null) {
         $this->idt_doc = $idt_doc !== null ? intval($idt_doc) : null;
@@ -16,8 +17,11 @@ class Documents{
         $this->date_doc = $date_doc;
     }
 
-    static function readAll(){
-        $sql = 'SELECT * FROM documents';
+    static function readAll($page = 1, $limit = 10){
+        $offset = max(0, ($page - 1) * $limit);
+        $sql = 'SELECT d.*, c.label_type_doc FROM documents d 
+                LEFT JOIN categories c ON d.type_doc = c.idt 
+                LIMIT ' . $offset . ', ' . $limit;
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute();
@@ -40,20 +44,20 @@ class Documents{
         return $documents;
     }
 
-    static function readDocByCommune($idt_asr){
-        $sql = 'SELECT documents.* FROM documents
-                JOIN docrelation ON documents.idt_doc = docrelation.idt_doc
-                JOIN communes ON docrelation.idt_asr = communes.idt_asr
-                WHERE communes.idt_asr = :idt_asr';
-        $pdo = connexion();
-        $query = $pdo->prepare($sql);
-        $query->execute(['idt_asr' => $idt_asr]);
+    // static function readDocByCommune($idt_asr){
+    //     $sql = 'SELECT documents.* FROM documents
+    //             JOIN docrelation ON documents.idt_doc = docrelation.idt_doc
+    //             JOIN communes ON docrelation.idt_asr = communes.idt_asr
+    //             WHERE communes.idt_asr = :idt_asr';
+    //     $pdo = connexion();
+    //     $query = $pdo->prepare($sql);
+    //     $query->execute(['idt_asr' => $idt_asr]);
         
-        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Documents');
+    //     $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Documents');
         
-        $documents = $query->fetchAll();
-        return $documents;
-    }
+    //     $documents = $query->fetchAll();
+    //     return $documents;
+    // }
 
 
     function chargePOST(){
