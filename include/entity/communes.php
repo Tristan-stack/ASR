@@ -2,6 +2,7 @@
 include('./include/connexion.php');
 include('./include/entity/users.php');
 include('./include/entity/documents.php');
+include('./include/entity/categories.php');
 
 //arborescence : 
 //SDEA/include/connexion.php
@@ -74,6 +75,17 @@ class Asr{
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute(['idt_asr' => $idt_asr]);
+    }
+
+    static function readCommuneByDoc($id_doc) {
+        $sql = 'SELECT a.* FROM communes a 
+                INNER JOIN docrelation dr ON a.idt_asr = dr.idt_asr
+                WHERE dr.idt_doc = :idt_doc'; 
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['idt_doc' => $id_doc]); 
+        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Asr');
+        return $query->fetchAll();
     }
 
     function chargePOST(){

@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>details doc</h1>
+<h2>Vous êtes sur le document : {{ documents.titre }}</h2> <!-- Affiche le nom du document -->
+
+<h2>Communes liées</h2>
+<ul>
+    {% for commune in communes %}
+    <li>{{ commune.nom }}</li>
+    {% endfor %}
+</ul>
 {% endblock %}

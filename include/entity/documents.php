@@ -55,6 +55,7 @@ class Documents{
         return $documents;
     }
 
+
     function chargePOST(){
         if (isset($_POST['idt_doc']) && !empty($_POST['idt_doc'])){
             $this->idt_doc = $_POST['idt_doc'];

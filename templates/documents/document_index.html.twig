@@ -2,28 +2,48 @@
 
 {% block body %}
     <h1>Liste doc</h1>
-    {# boucle pour afficher les documents #}
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                {# <th>Actions</th> #}
-            </tr>
-        </thead>
-        <tbody>
+
+    <!-- Ajoutez ce formulaire de recherche -->
+    <input type="text" id="search" placeholder="Rechercher...">
+
+    {% for category_name, documents in documentsByCategory %}
+        <input type="checkbox" class="category-checkbox" id="{{ category_name }}" name="{{ category_name }}" checked>
+        <label for="{{ category_name }}">Afficher {{ category_name }}</label>
+    {% endfor %}
+
+    {% for category_name, documents in documentsByCategory %}
+        <div class="category" data-category="{{ category_name }}">
+            <h4>Catégorie : {{ category_name }}</h4>
             {% for document in documents %}
-                <tr>
-                    <td>{{ document.idt_doc }}</td>
-                    <td>{{ document.titre }}</td>
-                    {# <td>
-                        <a href="controleur.php?page=documents&action=update&id={{document.id}}">Modifier</a>
-                        <a href="controleur.php?page=documents&action=delete&id={{document.id}}">Supprimer</a>
-                    </td> #}
-                </tr>
+                <!-- Ajoutez une classe "document" et un attribut "data-title" à chaque document -->
+                <div class="document" data-title="{{ document.titre }}">
+                    <p>ID: {{ document.idt_doc }}</p>
+                    <p>Titre: {{ document.titre }}</p>
+                    <a href="controleur.php?page=documents&action=read&id={{ document.idt_doc }}">Voir</a>
+                </div>
             {% endfor %}
-        </tbody>
-        {# <h3><a href="controleur.php?page=documents&action=create">Ajouter</a> un document</h3> #}
+        </div>
+    {% endfor %}
 
+    <script>
+        document.querySelectorAll('.category-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var category = this.id;
+                document.querySelectorAll('.category').forEach(function(categoryDiv) {
+                    if (categoryDiv.getAttribute('data-category') === category) {
+                        categoryDiv.style.display = checkbox.checked ? 'block' : 'none';
+                    }
+                });
+            });
+        });
 
+        // Ajoutez ce code pour la recherche
+        document.getElementById('search').addEventListener('input', function() {
+            var searchValue = this.value.toLowerCase();
+            document.querySelectorAll('.document').forEach(function(documentDiv) {
+                var title = documentDiv.getAttribute('data-title').toLowerCase();
+                documentDiv.style.display = title.includes(searchValue) ? 'block' : 'none';
+            });
+        });
+    </script>
 {% endblock %}

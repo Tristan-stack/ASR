@@ -43,8 +43,16 @@ switch($page){
         if ($id > 0) {
             $asr = Asr::readOne($id);
             $documents = Documents::readDocByCommune($id);
+    
+            // Regrouper les documents par catégorie
+            $documentsByCategory = [];
+            foreach ($documents as $document) {
+                $category = Categories::readOne($document->type_doc);
+                $documentsByCategory[$category->label_type_doc][] = $document;
+            }
+    
             $template = 'communes/commune_show.html.twig';
-            $data = ['asr' => $asr, 'documents' => $documents]; 
+            $data = ['asr' => $asr, 'documentsByCategory' => $documentsByCategory]; 
             break;
         } else {
             $asr = Asr::readAll();
@@ -241,13 +249,92 @@ switch($page){
             case 'read':
                 if ($id > 0) {
                     $documents = Documents::readOne($id);
+                    $communes = Asr::readCommuneByDoc($id); // Utiliser la méthode ici
                     $template = 'documents/document_detail.html.twig';
-                    $data = ['documents' => $documents];
+                    $data = ['documents' => $documents, 'communes' => $communes];
                 } else {
                     $documents = Documents::readAll();
+                    $documentsByCategory = [];
+                    foreach ($documents as $document) {
+                        $category = Categories::readOne($document->type_doc);
+                        if ($category !== null) {
+                            $documentsByCategory[$category->label_type_doc][] = $document;
+                        } else {
+                            // Handle the case where $document->type_doc does not correspond to a category
+                            // For example, you could add the document to a special "Uncategorized" category:
+                            $documentsByCategory['Uncategorized'][] = $document;
+                        }
+                    }
                     $template = 'documents/document_index.html.twig';
-                    $data = ['documents' => $documents];
+                    $data = ['documentsByCategory' => $documentsByCategory];
                 }
+                break;
+        }
+        break;
+
+    case 'categories':
+        switch($action){
+            
+            case 'read':
+                if ($id > 0) {
+                    $categories = Categories::readOne($id);
+                    $documents = $categories->getDocuments();
+                    $template = 'categories/show.html.twig';
+                    $data = ['categories' => $categories, 'documents' => $documents];
+                }else {
+                    $categories = Categories::readAll();
+                    $template = 'categories/index.html.twig';
+                    $data = ['categories' => $categories];
+                }
+                break;
+
+            case 'create':
+                $template = 'categories/create.html.twig';
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $idt = $_POST['idt'] ?? null; // replace 'idt' with the actual name of your input field
+                    $label_type_doc = $_POST['label_type_doc'] ?? null;
+                    $categories = new Categories($idt, $label_type_doc);
+                    $categories->chargePOST();
+                    if (empty($categories->label_type_doc)) {
+                        echo "Le champ est requis.";
+                    } else {
+                        $categories->create($label_type_doc);
+                        header('Location: controleur.php?page=categories&action=read');
+                        exit();
+                    }
+                }
+                break;
+
+            case 'update':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $id = $_POST['idt'] ?? null; // Obtenez l'ID de la catégorie à partir des données POST
+                    $label_type_doc = $_POST['label_type_doc'] ?? null; // Obtenez le nouveau label à partir des données POST
+                    $categories = new Categories($id, $label_type_doc); // Créez un nouvel objet Categories avec cet ID et ce label
+                    if (!empty($categories->label_type_doc)) {
+                        $categories->update(); // Mettez à jour la catégorie
+                        //var_dump($categories);
+                        header('Location: controleur.php?page=categories&action=read');
+                        exit();
+                    } else {
+                        echo "Veuillez remplir tous les champs.";
+                    }
+                } else {
+                    $id = $_GET['id'] ?? null;
+                    $categories = Categories::readOne($id);
+                    if ($categories) {
+                        $template = 'categories/update.html.twig';
+                        $data = ['categories' => $categories];
+                    } else {
+                        echo "La catégorie avec l'ID spécifié n'existe pas.";
+                    }
+                }
+                break;
+            
+            case 'delete':
+                $id = $_GET['id'];
+                Categories::delete($id);
+                header('Location: controleur.php?page=categories&action=read');
+                exit();
                 break;
         }
         break;
@@ -258,5 +345,5 @@ switch($page){
         break;
 }
 
-$data['session'] = $_SESSION; // Ajoutez cette ligne ici
+$data['session'] = $_SESSION; 
 echo $twig->render($template, $data);

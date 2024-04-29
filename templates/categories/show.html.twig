@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ categories.label_type_doc }}</h1>
+
+    <h2>Documents associés :</h2>
+    {% if documents is empty %}
+        <p>Aucun document associé à cette catégorie.</p>
+    {% else %}
+        <ul>
+        {% for document in documents %}
+            <li>
+                <h3>{{ document.titre }}</h3>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

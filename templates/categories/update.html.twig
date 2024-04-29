@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mettre à jour une catégorie{% endblock %}
+
+{% block body %}
+    <h1>Mettre à jour une catégorie</h1>
+
+    <form action="controleur.php?page=categories&action=update" method="post">
+        <input type="hidden" name="idt" value="{{ categories.idt }}">
+        <div class="form-group">
+            <label for="label_type_doc">Label de la catégorie</label>
+            <input type="text" id="label_type_doc" name="label_type_doc" class="form-control" value="{{ categories.label_type_doc }}" required>
+        </div>
+
+        <button type="submit">Mettre à jour</button>
+    </form>
+{% endblock %}

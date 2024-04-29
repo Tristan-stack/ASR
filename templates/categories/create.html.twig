@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une catégorie{% endblock %}
+
+{% block body %}
+    <h1>Créer une catégorie</h1>
+
+    <form action="controleur.php?page=categories&action=create" method="post">
+        <div class="form-group">
+            <label for="label_type_doc">Label de la catégorie</label>
+            <input type="text" id="label_type_doc" name="label_type_doc" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+{% endblock %}

@@ -8,9 +8,38 @@
 
     <h2>Rapports associé à cette commune :</h2>
 
-    {% for document in documents %}
-        <ul>
-            <li>{{ document.titre }}</li>
-        </ul>
+    {% for category_name, documents in documentsByCategory %}
+        <input type="checkbox" class="category-checkbox" id="{{ category_name }}" name="{{ category_name }}" checked>
+        <label for="{{ category_name }}">Afficher {{ category_name }}</label>
     {% endfor %}
+
+    {% for category_name, documents in documentsByCategory %}
+        <div class="category" data-category="{{ category_name }}">
+            <h4>Catégorie : {{ category_name }}</h4>
+            {% for document in documents %}
+                <ul>
+                    <li>
+                        {{ document.titre }}
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <script>
+        var checkboxes = document.querySelectorAll('.category-checkbox');
+        var categories = document.querySelectorAll('.category');
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var category = this.getAttribute('id');
+
+                categories.forEach(function(categoryDiv) {
+                    if (categoryDiv.getAttribute('data-category') === category) {
+                        categoryDiv.style.display = this.checked ? 'block' : 'none';
+                    }
+                }.bind(this));
+            });
+        });
+    </script>
 {% endblock %}
