@@ -1,35 +1,49 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
     <h1>Liste doc</h1>
 
     <!-- Ajoutez ce formulaire pour choisir le nombre de documents par page -->
     <form method="POST" action="controleur.php?page=documents&action=read">
         <label for="limit">Documents par page :</label>
         <select id="limit" name="limit">
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
+            <option value="200" {% if limit == 200 %}selected{% endif %}>200</option>
+            <option value="400" {% if limit == 400 %}selected{% endif %}>400</option>
+            <option value="500" {% if limit == 500 %}selected{% endif %}>500</option>
         </select>
         <label for="page">Page :</label>
-        <input type="number" id="page" name="page" min="1" value="1">
+        <select id="page" name="page">
+            {% for i in 1..totalPages %}
+                <option value="{{ i }}" {% if i == page %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Filtre par date -->
+        <label for="date">Date :</label>
+        <select id="date" name="date">
+            <option value="">Toutes les dates</option>
+            {% for date in availableDates %}
+                <option value="{{ date }}">{{ date }}</option>
+            {% endfor %}
+        </select>
+
         <input type="submit" value="Appliquer">
     </form>
 
     <!-- Formulaire de recherche -->
     <input type="text" id="search" placeholder="Rechercher...">
 
-    {% for category_name, documents in documentsByCategory %}
-        <input type="checkbox" class="category-checkbox" id="{{ category_name }}" name="{{ category_name }}" checked>
-        <label for="{{ category_name }}">Afficher {{ category_name }}</label>
+    {% for category in allCategories %}
+        <input type="checkbox" class="category-checkbox" id="{{ category.label_type_doc }}" name="{{ category.label_type_doc }}" checked>
+        <label for="{{ category.label_type_doc }}">Afficher {{ category.label_type_doc }}</label>
     {% endfor %}
 
     {% for category_name, documents in documentsByCategory %}
         <div class="category" data-category="{{ category_name }}">
             <h4>Catégorie : {{ category_name }}</h4>
             {% for document in documents %}
-                <!-- Ajoutez une classe "document" et un attribut "data-title" à chaque document -->
+                <!-- Ajoutez un attribut "data-year" à chaque document -->
                 <div class="document" data-title="{{ document.titre }}">
                     <p>ID: {{ document.idt_doc }}</p>
                     <p>Titre: {{ document.titre }}</p>
@@ -39,7 +53,20 @@
         </div>
     {% endfor %}
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
+        var titles = [];
+        {% for category_name, documents in documentsByCategory %}
+            {% for document in documents %}
+                titles.push("{{ document.titre }}");
+            {% endfor %}
+        {% endfor %}
+
+        $("#search").autocomplete({
+            source: titles
+        });
+
         document.querySelectorAll('.category-checkbox').forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
                 var category = this.id;
@@ -59,5 +86,6 @@
                 documentDiv.style.display = title.includes(searchValue) ? 'block' : 'none';
             });
         });
+
     </script>
 {% endblock %}

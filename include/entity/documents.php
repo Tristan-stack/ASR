@@ -44,21 +44,60 @@ class Documents{
         return $documents;
     }
 
-    // static function readDocByCommune($idt_asr){
-    //     $sql = 'SELECT documents.* FROM documents
-    //             JOIN docrelation ON documents.idt_doc = docrelation.idt_doc
-    //             JOIN communes ON docrelation.idt_asr = communes.idt_asr
-    //             WHERE communes.idt_asr = :idt_asr';
-    //     $pdo = connexion();
-    //     $query = $pdo->prepare($sql);
-    //     $query->execute(['idt_asr' => $idt_asr]);
+    static function readDocByCommune($idt_asr){
+        $sql = 'SELECT documents.* FROM documents
+                JOIN docrelation ON documents.idt_doc = docrelation.idt_doc
+                JOIN communes ON docrelation.idt_asr = communes.idt_asr
+                WHERE communes.idt_asr = :idt_asr';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['idt_asr' => $idt_asr]);
         
-    //     $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Documents');
+        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Documents');
         
-    //     $documents = $query->fetchAll();
-    //     return $documents;
-    // }
+        $documents = $query->fetchAll();
+        return $documents;
+    }
 
+    static function countAll(){
+        $sql = 'SELECT COUNT(*) FROM documents';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        
+        return $query->fetchColumn();
+    }
+
+    static function readByDate($date){
+        $pdo = connexion();
+    
+        if (empty($date)) {
+            // Si aucune date n'est fournie, renvoyez tous les documents
+            $sql = 'SELECT * FROM documents';
+            $query = $pdo->prepare($sql);
+            $query->execute();
+        } else {
+            // Sinon, renvoyez les documents pour la date spécifiée
+            $sql = 'SELECT * FROM documents WHERE date_doc = :date_doc';
+            $query = $pdo->prepare($sql);
+            $query->execute(['date_doc' => $date]);
+        }
+        
+        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Documents');
+        
+        $documents = $query->fetchAll();
+        return $documents;
+    }
+
+    static function getAvailableDates(){
+        $sql = 'SELECT DISTINCT date_doc FROM documents ORDER BY date_doc';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        
+        $dates = $query->fetchAll(PDO::FETCH_COLUMN);
+        return $dates;
+    }
 
     function chargePOST(){
         if (isset($_POST['idt_doc']) && !empty($_POST['idt_doc'])){

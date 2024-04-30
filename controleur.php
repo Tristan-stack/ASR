@@ -40,57 +40,57 @@ switch($page){
         $data = [];
         break;
     case 'asr':
-        if ($id > 0) {
-            $asr = Asr::readOne($id);
-            // $documents = Documents::readDocByCommune($id);
-    
-            // Regrouper les documents par catégorie
-            $documentsByCategory = [];
-            foreach ($documents as $document) {
-                $category = Categories::readOne($document->type_doc);
-                $documentsByCategory[$category->label_type_doc][] = $document;
-            }
-    
-            $template = 'communes/commune_show.html.twig';
-            $data = ['asr' => $asr, 'documentsByCategory' => $documentsByCategory]; 
-            break;
-        } else {
-            $asr = Asr::readAll();
-        
-            if (isset($_REQUEST['reset'])) {
-                $template = 'communes/commune_index.html.twig';
-                $data = ['asr' => $asr];
+        switch($action){
+            case 'read':
+                if ($id > 0) {
+                    $asr = Asr::readOne($id);
+                    $documents = Documents::readDocByCommune($id);
+            
+                    // Regrouper les documents par catégorie
+                    $documentsByCategory = [];
+                    foreach ($documents as $document) {
+                        $category = Categories::readOne($document->type_doc);
+                        $documentsByCategory[$category->label_type_doc][] = $document;
+                    }
+            
+                    $template = 'communes/commune_show.html.twig';
+                    $data = ['asr' => $asr, 'documentsByCategory' => $documentsByCategory]; 
+                } else {
+                    $asr = Asr::readAll();
+                
+                    if (isset($_REQUEST['reset'])) {
+                        $template = 'communes/commune_index.html.twig';
+                        $data = ['asr' => $asr];
+                    } else {
+                        if (isset($_REQUEST['nom']) && $_REQUEST['nom'] != '') {
+                            $nom = $_REQUEST['nom'];
+                            $asr = array_filter($asr, function($item) use ($nom) {
+                                return $item->nom == $nom;
+                            });
+                            $asr = array_values($asr);
+                        }
+                
+                        if (isset($_REQUEST['cp']) && $_REQUEST['cp'] != '') {
+                            $cp = $_REQUEST['cp'];
+                            $asr = array_filter($asr, function($item) use ($cp) {
+                                return $item->cp == $cp;
+                            });
+                            $asr = array_values($asr);
+                        }
+                
+                        if (isset($_REQUEST['order']) && ($_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc')) {
+                            $order = $_REQUEST['order'];
+                            usort($asr, function($a, $b) use ($order) {
+                                return $order === 'asc' ? strcmp($a->nom, $b->nom) : strcmp($b->nom, $a->nom);
+                            });
+                        }
+                
+                        $template = 'communes/commune_index.html.twig';
+                        $data = ['asr' => $asr];
+                    }
+                }
                 break;
-            }
-        
-            if (isset($_REQUEST['nom']) && $_REQUEST['nom'] != '') {
-                $nom = $_REQUEST['nom'];
-                $asr = array_filter($asr, function($item) use ($nom) {
-                    return $item->nom == $nom;
-                });
-                $asr = array_values($asr);
-            }
-        
-            if (isset($_REQUEST['cp']) && $_REQUEST['cp'] != '') {
-                $cp = $_REQUEST['cp'];
-                $asr = array_filter($asr, function($item) use ($cp) {
-                    return $item->cp == $cp;
-                });
-                $asr = array_values($asr);
-            }
-        
-            if (isset($_REQUEST['order']) && ($_REQUEST['order'] == 'asc' || $_REQUEST['order'] == 'desc')) {
-                $order = $_REQUEST['order'];
-                usort($asr, function($a, $b) use ($order) {
-                    return $order === 'asc' ? strcmp($a->nom, $b->nom) : strcmp($b->nom, $a->nom);
-                });
-            }
-        
-            $template = 'communes/commune_index.html.twig';
-            $data = ['asr' => $asr];
-            break;
         }
-        
         break;
     
     case 'user':
@@ -249,25 +249,47 @@ switch($page){
             case 'read':
                 if ($id > 0) {
                     $documents = Documents::readOne($id);
-                    $communes = Asr::readCommuneByDoc($id); // Utiliser la méthode ici
+                    $communes = Asr::readCommuneByDoc($id); 
                     $template = 'documents/document_detail.html.twig';
                     $data = ['documents' => $documents, 'communes' => $communes];
                 } else {
                     $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
-                    $limit = isset($_POST['limit']) ? (int)$_POST['limit'] : 10;
+                    $limit = isset($_POST['limit']) ? (int)$_POST['limit'] : 200;
                     $action = isset($_POST['action']) ? $_POST['action'] : 'read';
-                    $documents = Documents::readAll($page, $limit);
+                    
+                    // Check if a date was sent by the form
+                    if (isset($_POST['date']) && !empty($_POST['date'])) {
+                        $date = $_POST['date'];
+                        $documents = Documents::readByDate($date);
+                    } else {
+                        $documents = Documents::readAll($page, $limit);
+                    }
+                    
+                    $totalDocuments = Documents::countAll();
+                    $totalPages = ceil($totalDocuments / $limit);
                     $documentsByCategory = [];
                     foreach ($documents as $document) {
                         $categoryLabel = $document->label_type_doc;
-                        if ($categoryLabel !== null) {
+                        if ($categoryLabel !== null && $categoryLabel !== '') {
                             $documentsByCategory[$categoryLabel][] = $document;
                         } else {
                             $documentsByCategory['Uncategorized'][] = $document;
                         }
                     }
+                    $allCategories = Categories::readAll();
+    
+                    // Récupérez les dates disponibles de votre base de données
+                    $availableDates = Documents::getAvailableDates();
+    
                     $template = 'documents/document_index.html.twig';
-                    $data = ['documentsByCategory' => $documentsByCategory, 'limit' => $limit, 'page' => $page];
+                    $data = [
+                        'documentsByCategory' => $documentsByCategory, 
+                        'limit' => $limit, 
+                        'page' => $page, 
+                        'totalPages' => $totalPages, 
+                        'allCategories' => $allCategories,
+                        'availableDates' => $availableDates  // Ajoutez cette ligne
+                    ];
                 }
                 break;
         }

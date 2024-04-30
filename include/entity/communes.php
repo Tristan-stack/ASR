@@ -88,6 +88,14 @@ class Asr{
         return $query->fetchAll();
     }
 
+    static function readName($idt_asr){
+        $sql = 'SELECT nom FROM communes WHERE idt_asr = :idt_asr';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['idt_asr' => $idt_asr]);
+        return $query->fetchColumn();
+    }
+
     function chargePOST(){
         if(isset($_POST['nom'])){
             $this->nom = $_POST['nom'];
