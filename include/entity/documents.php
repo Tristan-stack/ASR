@@ -32,6 +32,18 @@ class Documents{
         return $tableau;
     }
 
+    static function getAllTypes(){
+        $sql = 'SELECT DISTINCT type_doc FROM documents ORDER BY type_doc';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        // var_dump($query->errorInfo());
+        
+        $types = $query->fetchAll(PDO::FETCH_COLUMN);
+        // var_dump($types);
+        return $types;
+    }
+
     static function readOne($idt_doc){
         $sql = 'SELECT * FROM documents WHERE idt_doc = :idt_doc';
         $pdo = connexion();
@@ -98,6 +110,35 @@ class Documents{
         $dates = $query->fetchAll(PDO::FETCH_COLUMN);
         return $dates;
     }
+    
+    static function create($titre, $link, $type_doc, $date_doc, $idt_doc){
+        echo 'create';
+        var_dump($titre, $link, $type_doc, $date_doc, $idt_doc); // Vérifiez les valeurs des paramètres
+        $sql = 'INSERT INTO documents (idt_doc, titre, link, type_doc, date_doc) VALUES (:idt_doc, :titre, :link, :type_doc, :date_doc)';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $result = $query->execute([
+            'idt_doc' => $idt_doc,
+            'titre' => $titre,
+            'link' => $link,
+            'type_doc' => $type_doc,
+            'date_doc' => $date_doc
+        ]);
+
+        var_dump($result); // Vérifiez le résultat de l'exécution de la requête
+
+        if ($result) {
+            // Si la requête a réussi, retournez l'ID du document inséré
+            $lastInsertId = $pdo->lastInsertId();
+            var_dump($lastInsertId); // Vérifiez l'ID du dernier document inséré
+            return $lastInsertId;
+        }
+
+        return $result;
+    }
+
+
+
 
     function chargePOST(){
         if (isset($_POST['idt_doc']) && !empty($_POST['idt_doc'])){

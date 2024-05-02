@@ -292,8 +292,61 @@ switch($page){
                     ];
                 }
                 break;
-        }
-        break;
+
+
+            case 'uploadedToday':
+                // var_dump($_POST);
+                $types = Documents::getAllTypes();
+                // var_dump($_POST);
+                $folder = $_GET['folder'] ?? null; 
+
+                if ($folder === null) {
+                    $template = 'documents/create.html.twig'; 
+                
+                    if (isset($_POST['titre'], $_POST['link'], $_POST['type_doc'], $_POST['date_doc'])) {
+                        $titre = $_POST['titre'];
+                        $link = $_POST['link'];
+                        $type_doc = strval($_POST['type_doc']); // Convertissez le type_doc en chaîne
+                        $date_doc = new DateTime($_POST['date_doc']);
+                        $date_formatted = $date_doc->format('Y-m-d'); // Formattez la date au format 'Y-m-d'
+                        $idt_doc = null; // ou une autre valeur appropriée
+                        $idt_doc = Documents::create($titre, $link, $type_doc, $date_formatted, $idt_doc);
+                    }
+                } else {
+                    var_dump($_POST);
+                    $dir = "C:/wamp64/www/DEPOT/$folder"; 
+                    $files = scandir($dir);
+
+                    $today = date('Y-m-d');
+                    $uploadedToday = [];
+
+                    foreach ($files as $file) {
+                        if ($file == '.' || $file == '..') {
+                            continue;
+                            
+                        }
+
+                        $filePath = $dir . '/' . $file;
+                        $modDate = date('Y-m-d', filemtime($filePath));
+
+                        if ($modDate == $today) {
+                            $uploadedToday[] = ['name' => $file, 'path' => $filePath]; // Stockez le nom et le chemin du fichier
+                        }
+                    }
+                    
+
+                    // Vérifiez si les données du formulaire ont été postées
+                    echo 'ouiiiiiiii';
+                    var_dump($_POST);
+                    
+
+                    $template = 'documents/create.html.twig'; 
+                    $data = ['uploadedToday' => $uploadedToday, 'types' => $types];
+                }
+
+                break;
+            }
+            break;
 
     case 'categories':
         switch($action){

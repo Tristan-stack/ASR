@@ -2,6 +2,8 @@
 
 {% block body %}
 <h2>Vous êtes sur le document : {{ documents.titre }}</h2> <!-- Affiche le nom du document -->
+<p>Le document a été créé le {{ documents.date_doc|date('d/m/Y') }}</p>
+<p>Le chemin du document : {{ documents.link }}</p>
 
 <h2>Communes liées</h2>
 <ul>

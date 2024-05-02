@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Détection de fichiers</h1>
+
+    <form action="controleur.php?page=documents&action=uploadedToday" method="get">
+        <input type="hidden" name="page" value="documents">
+        <input type="hidden" name="action" value="uploadedToday">
+
+        <label for="folder">Sélectionnez un dossier :</label>
+        <select name="folder" id="folder">
+            <option value="ASS">ASS</option>
+            <option value="REP">REP</option>
+            <option value="GCE">GCE</option>
+            <option value="ANC">ANC</option>
+            <option value="Synthese">Synthese</option>
+            <option value="Analyse">Analyse</option>
+        </select>
+
+        <input type="submit" value="Détecter les fichiers">
+    </form>
+
+    <h2>Fichiers téléchargés aujourd'hui</h2>
+
+    {% if uploadedToday is empty %}
+        <p>Aucun fichier n'a été téléchargé aujourd'hui.</p>
+    {% else %}
+        <ul>
+            {% for file in uploadedToday %}
+                <li class="file-path" data-path="{{ file.path }}">{{ file.name }} <br> {{ file.path }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form action="controleur.php?page=documents&action=uploadedToday" method="post">
+        <input type="hidden" name="page" value="documents">
+        <input type="hidden" name="action" value="uploadedToday">
+
+        <h2>Chemin du fichier sélectionné</h2>
+        <input type="text" id="selectedFilePath" name="link" readonly>
+
+        <label for="type_doc">Type de document :</label>
+        <input type="text" id="type_doc" name="type_doc" readonly>
+
+        <label for="titre">Titre du document :</label>
+        <input type="text" id="titre" name="titre">
+
+        <input type="hidden" name="date_doc" value="{{ 'now'|date('Y-m-d') }}">
+
+        <input type="submit" id="addDocument" value="Ajouter le document">
+    </form>
+
+    <script>
+        document.querySelectorAll('.file-path').forEach(function(li) {
+            li.addEventListener('click', function() {
+                document.getElementById('selectedFilePath').value = this.dataset.path;
+            });
+        });
+
+        var currentYear = new Date().getFullYear();
+        var lastYear = currentYear - 1;
+        var title = "Rapport annuel " + lastYear;
+        document.getElementById('titre').value = title;
+
+        document.getElementById('folder').addEventListener('change', function() {
+            var folder = this.value;
+            var type;
+        
+            switch (folder) {
+                case 'Analyse':
+                    type = '1';
+                    break;
+                case 'Synthese':
+                    type = '2';
+                    break;
+                case 'REP':
+                    type = '3';
+                    break;
+                case 'ASS':
+                    type = '4';
+                    break;
+                case 'ANC':
+                    type = '5';
+                    break;
+                case 'GCE':
+                    type = '6';
+                    break;
+                default:
+                    type = '1';
+            }
+        
+            document.getElementById('type_doc').value = type;
+    
+            // Stocker la sélection de l'utilisateur dans localStorage
+            localStorage.setItem('folder', folder);
+            localStorage.setItem('type_doc', type);
+        });
+    
+        // Récupérer la sélection de l'utilisateur de localStorage lors du chargement de la page
+        window.addEventListener('load', function() {
+            var folder = localStorage.getItem('folder');
+            var type_doc = localStorage.getItem('type_doc');
+    
+            if (folder && type_doc) {
+                document.getElementById('folder').value = folder;
+                document.getElementById('type_doc').value = type_doc;
+            }
+        });
+    </script>
+{% endblock %}
