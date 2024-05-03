@@ -80,19 +80,20 @@ class Documents{
         return $query->fetchColumn();
     }
 
-    static function readByDate($date){
+    static function readByDate($year){
         $pdo = connexion();
-    
-        if (empty($date)) {
-            // Si aucune date n'est fournie, renvoyez tous les documents
-            $sql = 'SELECT * FROM documents';
+        var_dump($year);
+        
+        if (empty($year)) {
+            // Si aucune année n'est fournie, renvoyez tous les documents
+            $sql = 'SELECT d.*, c.label_type_doc FROM documents d LEFT JOIN categories c ON d.type_doc = c.idt';
             $query = $pdo->prepare($sql);
             $query->execute();
         } else {
-            // Sinon, renvoyez les documents pour la date spécifiée
-            $sql = 'SELECT * FROM documents WHERE date_doc = :date_doc';
+            // Sinon, renvoyez les documents pour l'année spécifiée
+            $sql = 'SELECT d.*, c.label_type_doc FROM documents d LEFT JOIN categories c ON d.type_doc = c.idt WHERE YEAR(d.date_doc) = :year';
             $query = $pdo->prepare($sql);
-            $query->execute(['date_doc' => $date]);
+            $query->execute(['year' => $year]);
         }
         
         $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Documents');
@@ -102,13 +103,13 @@ class Documents{
     }
 
     static function getAvailableDates(){
-        $sql = 'SELECT DISTINCT date_doc FROM documents ORDER BY date_doc';
+        $sql = 'SELECT DISTINCT YEAR(date_doc) as year FROM documents ORDER BY year DESC';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute();
         
-        $dates = $query->fetchAll(PDO::FETCH_COLUMN);
-        return $dates;
+        $years = $query->fetchAll(PDO::FETCH_COLUMN);
+        return $years;
     }
     
     static function create($titre, $link, $type_doc, $date_doc, $idt_doc){
@@ -138,7 +139,17 @@ class Documents{
     }
 
 
-
+    static function update($idt_doc, $titre){
+        $sql = 'UPDATE documents SET titre = :titre WHERE idt_doc = :idt_doc';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $result = $query->execute([
+            'idt_doc' => $idt_doc,
+            'titre' => $titre
+        ]);
+    
+        return $result;
+    }
 
     function chargePOST(){
         if (isset($_POST['idt_doc']) && !empty($_POST['idt_doc'])){

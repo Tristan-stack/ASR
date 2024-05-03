@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Détection de fichiers</h1>
 
-    <form action="controleur.php?page=documents&action=uploadedToday" method="get">
+    <form action="" method="post">
         <input type="hidden" name="page" value="documents">
         <input type="hidden" name="action" value="uploadedToday">
 
@@ -33,9 +33,6 @@
     {% endif %}
 
     <form action="controleur.php?page=documents&action=uploadedToday" method="post">
-        <input type="hidden" name="page" value="documents">
-        <input type="hidden" name="action" value="uploadedToday">
-
         <h2>Chemin du fichier sélectionné</h2>
         <input type="text" id="selectedFilePath" name="link" readonly>
 
@@ -48,7 +45,19 @@
         <input type="hidden" name="date_doc" value="{{ 'now'|date('Y-m-d') }}">
 
         <input type="submit" id="addDocument" value="Ajouter le document">
+
+        <label for="communeSearch">Recherchez une commune :</label>
+        <input type="text" id="communeSearch">
+
+        <button type="button" id="addCommune">Ajouter la commune</button>
+
+        <h2>Communes sélectionnées</h2>
+        <ul id="selectedCommunes"></ul>
     </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <script>
         document.querySelectorAll('.file-path').forEach(function(li) {
@@ -56,16 +65,16 @@
                 document.getElementById('selectedFilePath').value = this.dataset.path;
             });
         });
-
+    
         var currentYear = new Date().getFullYear();
         var lastYear = currentYear - 1;
         var title = "Rapport annuel " + lastYear;
         document.getElementById('titre').value = title;
-
+    
         document.getElementById('folder').addEventListener('change', function() {
             var folder = this.value;
             var type;
-        
+    
             switch (folder) {
                 case 'Analyse':
                     type = '1';
@@ -88,7 +97,7 @@
                 default:
                     type = '1';
             }
-        
+    
             document.getElementById('type_doc').value = type;
     
             // Stocker la sélection de l'utilisateur dans localStorage
@@ -105,6 +114,57 @@
                 document.getElementById('folder').value = folder;
                 document.getElementById('type_doc').value = type_doc;
             }
+        });
+    
+        var communes = [
+            {% for commune in asr %}
+            {
+                label: "{{ commune.nom }}",
+                value: "{{ commune.idt_asr }}"
+            },
+            {% endfor %}
+        ];
+    
+        $('#communeSearch').autocomplete({
+            source: communes,
+            select: function(event, ui) {
+                // Stocker l'ID de la commune sélectionnée dans un attribut de données
+                $(this).data('communeId', ui.item.value);
+                // Mettre à jour la valeur de l'input avec le nom de la commune
+                $(this).val(ui.item.label);
+                // Empêcher l'événement par défaut de mettre à jour la valeur de l'input avec l'ID de la commune
+                event.preventDefault();
+            }
+        });
+    
+        document.getElementById('addCommune').addEventListener('click', function() {
+            var communeName = $('#communeSearch').val();
+            var communeId = $('#communeSearch').data('communeId');
+    
+            var li = document.createElement('li');
+            li.textContent = communeName;
+    
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Supprimer';
+            deleteButton.addEventListener('click', function() {
+                li.remove();
+                // Supprimer l'input correspondant lorsque la commune est supprimée
+                document.getElementById('communeInput' + communeId).remove();
+            });
+    
+            li.appendChild(deleteButton);
+    
+            document.getElementById('selectedCommunes').appendChild(li);
+    
+            // Créer un nouvel input pour chaque commune ajoutée
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'communes[]'; // Les crochets indiquent que c'est un tableau
+            input.value = communeId;
+            input.id = 'communeInput' + communeId; // Pour pouvoir le supprimer plus tard
+    
+            // Ajouter l'input au bon formulaire
+            document.querySelector('form[action="controleur.php?page=documents&action=uploadedToday"]').appendChild(input);
         });
     </script>
 {% endblock %}

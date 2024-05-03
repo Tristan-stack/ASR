@@ -23,14 +23,13 @@
         </select>
 
         <!-- Filtre par date -->
-        <label for="date">Date :</label>
+        <label for="date">Année :</label>
         <select id="date" name="date">
-            <option value="">Toutes les dates</option>
-            {% for date in availableDates %}
-                <option value="{{ date }}">{{ date }}</option>
+            <option value="">Toutes les années</option>
+            {% for year in availableDates %}
+                <option value="{{ year }}">{{ year }}</option>
             {% endfor %}
         </select>
-
         <input type="submit" value="Appliquer">
     </form>
 
@@ -51,6 +50,7 @@
                     <p>ID: {{ document.idt_doc }}</p>
                     <p>Titre: {{ document.titre }}</p>
                     <a href="controleur.php?page=documents&action=read&id={{ document.idt_doc }}">Voir</a>
+                    <a href="controleur.php?page=documents&action=update&id={{ document.idt_doc }}">Modifier</a>
                 </div>
             {% endfor %}
         </div>

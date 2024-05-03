@@ -3,6 +3,7 @@ include('./include/connexion.php');
 include('./include/entity/users.php');
 include('./include/entity/documents.php');
 include('./include/entity/categories.php');
+include('./include/entity/docrelation.php');
 
 //arborescence : 
 //SDEA/include/connexion.php

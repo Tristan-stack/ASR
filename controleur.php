@@ -249,9 +249,11 @@ switch($page){
             case 'read':
                 if ($id > 0) {
                     $documents = Documents::readOne($id);
-                    $communes = Asr::readCommuneByDoc($id); 
+                    // Récupérez uniquement les communes liées au document spécifique
+                    $asr = Docrelation::getCommunesByDocument($id);
                     $template = 'documents/document_detail.html.twig';
-                    $data = ['documents' => $documents, 'communes' => $communes];
+                    // Passez les communes à la vue
+                    $data = ['documents' => $documents, 'asr' => $asr];
                 } else {
                     $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
                     $limit = isset($_POST['limit']) ? (int)$_POST['limit'] : 200;
@@ -259,8 +261,9 @@ switch($page){
                     
                     // Check if a date was sent by the form
                     if (isset($_POST['date']) && !empty($_POST['date'])) {
-                        $date = $_POST['date'];
-                        $documents = Documents::readByDate($date);
+                        $year = $_POST['date']; // Supposons que le formulaire envoie juste une année
+                        $documents = Documents::readByDate($year);
+                        // var_dump($documents);
                     } else {
                         $documents = Documents::readAll($page, $limit);
                     }
@@ -270,12 +273,12 @@ switch($page){
                     $documentsByCategory = [];
                     foreach ($documents as $document) {
                         $categoryLabel = $document->label_type_doc;
-                        if ($categoryLabel !== null && $categoryLabel !== '') {
-                            $documentsByCategory[$categoryLabel][] = $document;
-                        } else {
-                            $documentsByCategory['Uncategorized'][] = $document;
+                        if ($categoryLabel === null || $categoryLabel === '') {
+                            $categoryLabel = 'Uncategorized';
                         }
+                        $documentsByCategory[$categoryLabel][] = $document;
                     }
+                    // var_dump($documentsByCategory);
                     $allCategories = Categories::readAll();
     
                     // Récupérez les dates disponibles de votre base de données
@@ -295,10 +298,10 @@ switch($page){
 
 
             case 'uploadedToday':
-                // var_dump($_POST);
+                var_dump($_POST);
                 $types = Documents::getAllTypes();
-                // var_dump($_POST);
-                $folder = $_GET['folder'] ?? null; 
+                $asr = Asr::readAll();
+                $folder = $_POST['folder'] ?? null; 
 
                 if ($folder === null) {
                     $template = 'documents/create.html.twig'; 
@@ -311,9 +314,16 @@ switch($page){
                         $date_formatted = $date_doc->format('Y-m-d'); // Formattez la date au format 'Y-m-d'
                         $idt_doc = null; // ou une autre valeur appropriée
                         $idt_doc = Documents::create($titre, $link, $type_doc, $date_formatted, $idt_doc);
+
+                        if (isset($_POST['communes']) && is_array($_POST['communes'])) {
+                            echo "PUTE ";
+                            var_dump($_POST['communes']);
+                            Docrelation::createMultiple($idt_doc, $_POST['communes']);
+                        }
                     }
+                    $data = ['asr' => $asr];
                 } else {
-                    var_dump($_POST);
+                    // var_dump($_POST);
                     $dir = "C:/wamp64/www/DEPOT/$folder"; 
                     $files = scandir($dir);
 
@@ -335,15 +345,44 @@ switch($page){
                     }
                     
 
-                    // Vérifiez si les données du formulaire ont été postées
-                    echo 'ouiiiiiiii';
-                    var_dump($_POST);
-                    
-
                     $template = 'documents/create.html.twig'; 
-                    $data = ['uploadedToday' => $uploadedToday, 'types' => $types];
+                    $data = ['uploadedToday' => $uploadedToday, 'types' => $types, 'asr' => $asr, 'folder' => $folder];
                 }
 
+                break;
+
+            case 'update' : 
+                if (isset($_POST['id'], $_POST['titre'])) {
+                    $id = $_POST['id'];
+                    $titre = $_POST['titre'];
+                    // Mettez à jour les informations du document
+                    Documents::update($id, $titre);
+            
+                    // Vérifiez si des communes ont été envoyées avec le formulaire
+                    if (isset($_POST['communes']) && is_array($_POST['communes'])) {
+                        // Supprimez toutes les relations existantes
+                        Docrelation::deleteByDocument($id);
+            
+                        // Créez de nouvelles relations
+                        Docrelation::createMultiple($id, $_POST['communes']);
+                    }
+            
+                    // Redirigez vers la page de détail du document
+                    header('Location: controleur.php?page=documents&action=read&id=' . $id);
+                    exit;
+                } else {
+                    // Récupérez les informations du document et des communes
+                    $document = Documents::readOne($id);
+                    $communes = Docrelation::getCommunesByDocument($id);
+                    $allCommunes = Asr::readAll();
+                    $allCommunesForAutocomplete = array_map(function($commune) {
+                        return ['label' => $commune->nom, 'value' => $commune->idt_asr];
+                    }, $allCommunes);
+                            
+                    $template = 'documents/update.html.twig';
+                    $data = ['document' => $document, 'communes' => $communes, 'allCommunes' => $allCommunesForAutocomplete];
+                    
+                }
                 break;
             }
             break;
