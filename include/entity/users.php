@@ -184,41 +184,41 @@ class User{
 
     function chargePOST(){
         if (isset($_POST['id']) && !empty($_POST['id'])){
-            $this->id = $_POST['id'];
+            $this->id = intval($_POST['id']);
         }
-
+    
         if(isset($_POST['username'])){
-            $this->username = $_POST['username'];
+            $this->username = htmlspecialchars($_POST['username']);
         } else {
             $this->username = '';
         }
-
+    
         if(isset($_POST['email'])){
-            $this->email = $_POST['email'];
+            $this->email = htmlspecialchars($_POST['email']);
         } else {
             $this->email = '';
         } 
-
+    
         if(isset($_POST['password'])){
-            $this->password = $_POST['password'];
+            $this->password = htmlspecialchars($_POST['password']);
         } else {
             $this->password = '';
         }
-
+    
         if(isset($_POST['date_last_action'])){
-            $this->date_last_action = $_POST['date_last_action'];
+            $this->date_last_action = htmlspecialchars($_POST['date_last_action']);
         } else {
             $this->date_last_action = '';
         }
-
+    
         if(isset($_POST['date_last_connexion'])){
-            $this->date_last_connexion = $_POST['date_last_connexion'];
+            $this->date_last_connexion = htmlspecialchars($_POST['date_last_connexion']);
         } else {
             $this->date_last_connexion = '';
         }
-
+    
         if(isset($_POST['role_id'])){ 
-            $this->role_id = $_POST['role_id']; 
+            $this->role_id = intval($_POST['role_id']); 
         } else {
             $this->role_id = ''; 
         }

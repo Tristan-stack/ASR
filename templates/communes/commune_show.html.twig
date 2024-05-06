@@ -6,6 +6,9 @@
     <p>Nom : {{ asr.nom }}</p>
     <p>Code Postal : {{ asr.cp }}</p>
 
+    <a href="controleur.php?page=asr&action=update&id={{ asr.idt_asr }}">Modifier</a>
+    <a href="controleur.php?page=asr&action=delete&id={{ asr.idt_asr }}">Supprimer</a>
+
     <h2>Rapports associé à cette commune :</h2>
 
     {% for category_name, documents in documentsByCategory %}

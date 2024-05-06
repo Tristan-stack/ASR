@@ -151,34 +151,42 @@ class Documents{
         return $result;
     }
 
+    static function delete($idt_doc){
+        $sql = 'DELETE FROM documents WHERE idt_doc = :idt_doc';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $result = $query->execute(['idt_doc' => $idt_doc]);
+    
+        return $result;
+    }
+
     function chargePOST(){
         if (isset($_POST['idt_doc']) && !empty($_POST['idt_doc'])){
-            $this->idt_doc = $_POST['idt_doc'];
+            $this->idt_doc = htmlspecialchars($_POST['idt_doc']);
         }
-
+    
         if(isset($_POST['titre'])){
-            $this->titre = $_POST['titre'];
+            $this->titre = htmlspecialchars($_POST['titre']);
         } else {
             $this->titre = '';
         }
-
+    
         if(isset($_POST['link'])){
-            $this->link = $_POST['link'];
+            $this->link = htmlspecialchars($_POST['link']);
         } else {
             $this->link = '';
         }
-
+    
         if(isset($_POST['type_doc'])){
-            $this->type_doc = $_POST['type_doc'];
+            $this->type_doc = htmlspecialchars($_POST['type_doc']);
         } else {
             $this->type_doc = '';
         }
-
+    
         if(isset($_POST['date_doc'])){
-            $this->date_doc = $_POST['date_doc'];
+            $this->date_doc = htmlspecialchars($_POST['date_doc']);
         } else {
             $this->date_doc = '';
         }
-
     }
 }

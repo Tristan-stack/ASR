@@ -5,7 +5,9 @@
     <h1>Liste doc</h1>
 
     {# lien pour crrer un dossier #}
-    <a href="controleur.php?page=documents&action=uploadedToday">Créer</a>
+    {% if session.role_id == 1 or session.role_id == 2 %}
+        <a href="controleur.php?page=documents&action=uploadedToday">Créer</a>
+    {% endif %}
 
     <!-- Ajoutez ce formulaire pour choisir le nombre de documents par page -->
     <form method="POST" action="controleur.php?page=documents&action=read">
@@ -49,8 +51,11 @@
                 <div class="document" data-title="{{ document.titre }}">
                     <p>ID: {{ document.idt_doc }}</p>
                     <p>Titre: {{ document.titre }}</p>
-                    <a href="controleur.php?page=documents&action=read&id={{ document.idt_doc }}">Voir</a>
-                    <a href="controleur.php?page=documents&action=update&id={{ document.idt_doc }}">Modifier</a>
+                    {% if session.role_id == 1 or session.role_id == 2 %}
+                        <a href="controleur.php?page=documents&action=read&id={{ document.idt_doc }}">Voir</a>
+                        <a href="controleur.php?page=documents&action=update&id={{ document.idt_doc }}">Modifier</a>
+                        <a href="controleur.php?page=documents&action=delete&id={{ document.idt_doc }}">Supprimer</a>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

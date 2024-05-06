@@ -46,11 +46,11 @@ class Docrelation{
 
     function chargePOST(){
         if (isset($_POST['idt_doc']) && !empty($_POST['idt_doc'])){
-            $this->idt_doc = $_POST['idt_doc'];
+            $this->idt_doc = htmlspecialchars($_POST['idt_doc']);
         }  
-
+    
         if (isset($_POST['idt_asr']) && !empty($_POST['idt_asr'])){
-            $this->idt_asr = $_POST['idt_asr'];
+            $this->idt_asr = htmlspecialchars($_POST['idt_asr']);
         }
     }
 }

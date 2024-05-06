@@ -1,0 +1,6 @@
+# Activer la réécriture d'URL
+RewriteEngine On
+
+# Bloquer l'accès aux répertoires sensibles
+RewriteRule ^(admin|include) - [F,L]
+RewriteRule ^mysite - [L] 

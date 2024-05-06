@@ -68,13 +68,13 @@ class Categories{
 
     function chargePOST(){
         if(isset($_POST['idt'])){
-            $this->idt = $_POST['idt'];
+            $this->idt = htmlspecialchars($_POST['idt']);
         } else {
             $this->idt = '';
         }
-
+    
         if(isset($_POST['label_type_doc'])){
-            $this->label_type_doc = $_POST['label_type_doc'];
+            $this->label_type_doc = htmlspecialchars($_POST['label_type_doc']);
         } else {
             $this->label_type_doc = '';
         }

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une catégorie{% endblock %}
+
+{% block body %}
+    <h1>Créer une catégorie</h1>
+
+    <form action="controleur.php?page=asr&action=create" method="post">
+        <div class="form-group">
+            <label for="nom">Nom de la communes</label>
+            <input type="text" id="nom" name="nom" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cp">Code postal</label>
+            <input type="text" id="cp" name="cp" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+{% endblock %}

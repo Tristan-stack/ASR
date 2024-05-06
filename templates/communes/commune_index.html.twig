@@ -2,6 +2,9 @@
 
 {% block body %}
     <h1>Liste communes</h1>
+    {% if session.role_id == 1 %}
+        <a href="controleur.php?page=asr&action=create">Créer une commune</a>
+    {% endif %}
     <form method="get">
         <label for="nom">Nom :</label>
         <input type="text" id="nom" name="nom" value="{{ app.request.get('nom') }}">

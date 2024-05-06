@@ -2,13 +2,18 @@
 
 {% block body %}
 <h1>Categories disponible</h1>
-<a href="controleur.php?page=categories&action=create">Ajouter une catégorie</a>
+
+{% if session.role_id == 1 %}
+    <a href="controleur.php?page=categories&action=create">Ajouter une catégorie</a>
+{% endif %}
     {% for element in categories %}
         <ul>
             <li>{{ element.idt }}</li>
             <li><a href="controleur.php?page=categories&action=read&id={{ element.idt }}">{{ element.label_type_doc }}</a> 
-                <button><a href="controleur.php?page=categories&action=delete&id={{ element.idt }}">Supprimer</a></button> 
-                <a href="controleur.php?page=categories&action=update&id={{ element.idt }}">Modifier</a> </li>
+                {% if session.role_id == 1 %}
+                    <button><a href="controleur.php?page=categories&action=delete&id={{ element.idt }}">Supprimer</a></button> 
+                    <a href="controleur.php?page=categories&action=update&id={{ element.idt }}">Modifier</a> </li>
+                {% endif %}
         </ul>
         
     {% endfor %}

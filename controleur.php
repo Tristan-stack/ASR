@@ -90,6 +90,55 @@ switch($page){
                     }
                 }
                 break;
+
+            case 'create':
+                $template = 'communes/create.html.twig';
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $nom = $_POST['nom'] ?? null;
+                    $cp = $_POST['cp'] ?? null;
+                    $asr = new Asr(null, $nom, $cp);
+                    $asr->chargePOST();
+                    if (empty($asr->nom) || empty($asr->cp)) {
+                        echo "Tous les champs sont requis.";
+                    } else {
+                        $asr::create($nom, $cp);
+                        header('Location: controleur.php?page=asr&action=read');
+                        exit();
+                    }
+                }
+                break;
+
+            case 'update':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $id = $_POST['idt_asr'] ?? null;
+                    $nom = $_POST['nom'] ?? null;
+                    $cp = $_POST['cp'] ?? null;
+                    $asr = new Asr($id, $nom, $cp);
+                    if (!empty($asr->nom) && !empty($asr->cp)) {
+                        $asr::update($id, $nom, $cp);
+                        header('Location: controleur.php?page=asr&action=read');
+                        exit();
+                    } else {
+                        echo "Veuillez remplir tous les champs.";
+                    }
+                } else {
+                    $id = $_GET['id'] ?? null;
+                    $asr = Asr::readOne($id);
+                    if ($asr) {
+                        $template = 'communes/update.html.twig';
+                        $data = ['asr' => $asr];
+                    } else {
+                        echo "La commune avec l'ID spécifié n'existe pas.";
+                    }
+                }
+                break;
+            
+            case 'delete':
+                $id = $_GET['id'];
+                Asr::delete($id);
+                header('Location: controleur.php?page=asr&action=read');
+                exit();
+                break;
         }
         break;
     
@@ -384,6 +433,13 @@ switch($page){
                     
                 }
                 break;
+
+            case 'delete':
+                $id = $_GET['id'];
+                Documents::delete($id);
+                header('Location: controleur.php?page=documents&action=read');
+                exit();
+                break; 
             }
             break;
 

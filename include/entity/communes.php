@@ -99,13 +99,13 @@ class Asr{
 
     function chargePOST(){
         if(isset($_POST['nom'])){
-            $this->nom = $_POST['nom'];
+            $this->nom = htmlspecialchars($_POST['nom']);
         } else {
             $this->nom = '';
         }
-
+    
         if(isset($_POST['cp'])){
-            $this->cp = $_POST['cp'];
+            $this->cp = htmlspecialchars($_POST['cp']);
         } else {
             $this->cp = '';
         }

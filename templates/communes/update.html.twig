@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mettre à jour une commune{% endblock %}
+
+{% block body %}
+    <h1>Mettre à jour une commune</h1>
+
+    <form action="controleur.php?page=asr&action=update" method="post">
+        <input type="hidden" name="idt_asr" value="{{ asr.idt_asr }}">
+        <div class="form-group">
+            <label for="nom">Nom categorie</label>
+            <input type="text" id="nom" name="nom" class="form-control" value="{{ asr.nom }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cp">Code postal</label>
+            <input type="text" id="cp" name="cp" class="form-control" value="{{ asr.cp }}" required>
+        </div>
+
+        <button type="submit">Mettre à jour</button>
+    </form>
+{% endblock %}
