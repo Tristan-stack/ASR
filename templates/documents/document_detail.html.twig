@@ -11,4 +11,6 @@
     <li>{{ commune.nom }}</li>
     {% endfor %}
 </ul>
+<a href="controleur.php?page=documents&action=update&id={{ documents.idt_doc }}">Modifier</a>
+<a href="controleur.php?page=documents&action=delete&id={{ documents.idt_doc }}">Supprimer</a>
 {% endblock %}

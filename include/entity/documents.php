@@ -111,6 +111,17 @@ class Documents{
         $years = $query->fetchAll(PDO::FETCH_COLUMN);
         return $years;
     }
+
+    static function isPathInDatabase($link){
+        $sql = 'SELECT COUNT(*) FROM documents WHERE link = :link';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->execute(['link' => $link]);
+        
+        // Si le nombre de lignes retournées est supérieur à 0, le chemin est déjà dans la base de données
+        return $query->fetchColumn() > 0;
+    }
+
     
     static function create($titre, $link, $type_doc, $date_doc, $idt_doc){
         echo 'create';

@@ -9,7 +9,6 @@
         <a href="controleur.php?page=documents&action=uploadedToday">Créer</a>
     {% endif %}
 
-    <!-- Ajoutez ce formulaire pour choisir le nombre de documents par page -->
     <form method="POST" action="controleur.php?page=documents&action=read">
         <label for="limit">Documents par page :</label>
         <select id="limit" name="limit">
@@ -47,7 +46,6 @@
         <div class="category" data-category="{{ category_name }}">
             <h4>Catégorie : {{ category_name }}</h4>
             {% for document in documents %}
-                <!-- Ajoutez un attribut "data-year" à chaque document -->
                 <div class="document" data-title="{{ document.titre }}">
                     <p>ID: {{ document.idt_doc }}</p>
                     <p>Titre: {{ document.titre }}</p>
@@ -86,7 +84,6 @@
             });
         });
 
-        // Ajoutez ce code pour la recherche
         document.getElementById('search').addEventListener('input', function() {
             var searchValue = this.value.toLowerCase();
             document.querySelectorAll('.document').forEach(function(documentDiv) {

@@ -354,7 +354,7 @@ switch($page){
 
                 if ($folder === null) {
                     $template = 'documents/create.html.twig'; 
-                
+
                     if (isset($_POST['titre'], $_POST['link'], $_POST['type_doc'], $_POST['date_doc'])) {
                         $titre = $_POST['titre'];
                         $link = $_POST['link'];
@@ -362,7 +362,10 @@ switch($page){
                         $date_doc = new DateTime($_POST['date_doc']);
                         $date_formatted = $date_doc->format('Y-m-d'); // Formattez la date au format 'Y-m-d'
                         $idt_doc = null; // ou une autre valeur appropriée
-                        $idt_doc = Documents::create($titre, $link, $type_doc, $date_formatted, $idt_doc);
+
+                        if (!Documents::isPathInDatabase($link)) {
+                            $idt_doc = Documents::create($titre, $link, $type_doc, $date_formatted, $idt_doc);
+                        }
 
                         if (isset($_POST['communes']) && is_array($_POST['communes'])) {
                             echo "PUTE ";
@@ -382,17 +385,21 @@ switch($page){
                     foreach ($files as $file) {
                         if ($file == '.' || $file == '..') {
                             continue;
-                            
                         }
 
                         $filePath = $dir . '/' . $file;
+
+                        // Si le chemin du fichier est déjà dans la base de données, passez à l'itération suivante de la boucle
+                        if (Documents::isPathInDatabase($filePath)) {
+                            continue;
+                        }
+
                         $modDate = date('Y-m-d', filemtime($filePath));
 
                         if ($modDate == $today) {
                             $uploadedToday[] = ['name' => $file, 'path' => $filePath]; // Stockez le nom et le chemin du fichier
                         }
                     }
-                    
 
                     $template = 'documents/create.html.twig'; 
                     $data = ['uploadedToday' => $uploadedToday, 'types' => $types, 'asr' => $asr, 'folder' => $folder];
@@ -409,11 +416,15 @@ switch($page){
             
                     // Vérifiez si des communes ont été envoyées avec le formulaire
                     if (isset($_POST['communes']) && is_array($_POST['communes'])) {
-                        // Supprimez toutes les relations existantes
-                        Docrelation::deleteByDocument($id);
+                        // Obtenez toutes les relations existantes
+                        $existingRelations = Docrelation::getCommunesByDocument($id);
             
-                        // Créez de nouvelles relations
-                        Docrelation::createMultiple($id, $_POST['communes']);
+                        // Créez de nouvelles relations pour les communes qui ne sont pas déjà associées au document
+                        foreach ($_POST['communes'] as $commune) {
+                            if (!in_array($commune, $existingRelations)) {
+                                Docrelation::create($id, $commune);
+                            }
+                        }
                     }
             
                     // Redirigez vers la page de détail du document
