@@ -10,14 +10,6 @@ include('./include/entity/docrelation.php');
 //SDEA/include/entity/communes.php
 //SDEA/controleur.php
 //SDEA/templates/home/home.html.twig
-
-//si le include a reussi et que le fichier trouvé alor echo
-if (file_exists('./include/connexion.php')) {
-    echo 'Le fichier connexion a été trouvé.';
-} else {
-    echo 'Le fichier n\'a pas été trouvé.';
-}
-
 class Asr{
     public $idt_asr;
     public $nom;

@@ -28,11 +28,6 @@ else $id = 0;
 if (isset($_GET['page'])) $page = $_GET['page'];
 else $page = 'asr';
 
-if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
-    echo "Nom d'utilisateur : " . $_SESSION['username'];
-    echo " compte n° : " . $_SESSION['id'];
-}
-
 
 switch($page){
     case 'home':
@@ -368,7 +363,6 @@ switch($page){
                         }
 
                         if (isset($_POST['communes']) && is_array($_POST['communes'])) {
-                            echo "PUTE ";
                             var_dump($_POST['communes']);
                             Docrelation::createMultiple($idt_doc, $_POST['communes']);
                         }
@@ -379,7 +373,6 @@ switch($page){
                     $dir = "C:/wamp64/www/DEPOT/$folder"; 
                     $files = scandir($dir);
 
-                    $today = date('Y-m-d');
                     $uploadedToday = [];
 
                     foreach ($files as $file) {
@@ -394,11 +387,7 @@ switch($page){
                             continue;
                         }
 
-                        $modDate = date('Y-m-d', filemtime($filePath));
-
-                        if ($modDate == $today) {
-                            $uploadedToday[] = ['name' => $file, 'path' => $filePath]; // Stockez le nom et le chemin du fichier
-                        }
+                        $uploadedToday[] = ['name' => $file, 'path' => $filePath]; // Stockez le nom et le chemin du fichier
                     }
 
                     $template = 'documents/create.html.twig'; 
