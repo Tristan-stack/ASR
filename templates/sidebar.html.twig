@@ -18,7 +18,7 @@
       <ul class="py-7 space-y-2 font-medium">
          <li>
             <a href="#"
-               class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-100 group font-normal">
+               class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-100 group font-normal transition duration-300">
                <svg
                   class="flex-shrink-0 w-5 h-5 text-zinc-600 transition duration-75 text-neutral-900 group-hover:text-neutral-900 dark:group-hover:text-zinc-600"
                   aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
@@ -30,7 +30,7 @@
          </li>
          <li>
             <a href="controleur.php?page=home"
-               class="flex items-center p-2 text-zinc-600 rounded-lg dark:hover:text-neutral-900 hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal">
+               class="flex items-center p-2 text-zinc-600 rounded-lg dark:hover:text-neutral-900 hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal transition duration-300">
                <svg
                   class="flex-shrink-0 w-5 h-5 text-zinc-600 transition duration-75 text-neutral-900 group-hover:text-neutral-900 dark:group-hover:text-zinc-600e"
                   aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
@@ -42,7 +42,7 @@
          </li>
          <li>
             <a href="controleur.php?page=asr&action=read"
-               class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal ">
+               class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal transition duration-300">
                <svg
                   class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 text-zinc-600 group-hover:text-neutral-900 dark:group-hover:text-zinc-600"
                   aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -54,7 +54,7 @@
          </li>
          <li>
             <a href="controleur.php?page=documents&action=read"
-               class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal">
+               class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal transition duration-300">
                <svg
                   class="flex-shrink-0 w-5 h-5 text-zinc-600 transition duration-75 text-neutral-900 group-hover:text-neutral-900 dark:group-hover:text-zinc-600"
                   aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
@@ -70,7 +70,7 @@
          
          <li>
             <a href="#"
-               class="flex items-center p-2 text-zinc-600 transition duration-75 rounded-lg hover:bg-gray-100 font-normal dark:hover:bg-sky-100 text-neutral-900 group">
+               class="flex items-center p-2 text-zinc-600 transition duration-75 rounded-lg hover:bg-gray-100 font-normal dark:hover:bg-sky-100 text-neutral-900 group transition duration-300">
                <svg
                   class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 text-zinc-600 group-hover:text-neutral-900 dark:group-hover:text-zinc-600"
                   aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 21 21">
@@ -83,7 +83,7 @@
          {% if session.role_id == 1 %}
             <li>
                <a href="controleur.php?page=admin&action=read"
-                  class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal">
+                  class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal transition duration-300">
                   <svg
                      class="flex-shrink-0 w-5 h-5 text-zinc-600 transition duration-75 text-neutral-900 group-hover:text-neutral-900 dark:group-hover:text-zinc-600"
                      aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -102,20 +102,20 @@
          {% if session.username is defined %}
             <li>
                <a href="controleur.php?page=user&action=logout"
-                  class="flex items-center p-2 text-zinc-600 transition duration-75 rounded-lg hover:bg-gray-100 font-normal dark:hover:bg-sky-100 text-neutral-900 group ">
+                  class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal transition duration-300">
                   <svg
                      class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 text-zinc-600 group-hover:text-neutral-900 dark:group-hover:text-zinc-600"
                      aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
                   </svg>
-                  <span class="ms-3 ">Deconnexion</span>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Deconnexion</span>
                </a>
             </li>
          {% else %}
             <li>
                <a href="controleur.php?page=user&action=login"
-                  class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal">
+                  class="flex items-center p-2 text-zinc-600 rounded-lg hover:bg-gray-100 dark:hover:bg-sky-100 group font-normal transition duration-300">
                   <svg
                      class="flex-shrink-0 w-5 h-5 text-zinc-600 transition duration-75 text-neutral-900 group-hover:text-neutral-900 dark:group-hover:text-zinc-600"
                      aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

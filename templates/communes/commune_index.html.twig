@@ -1,43 +1,121 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Liste communes</h1>
-    {% if session.role_id == 1 %}
-        <a href="controleur.php?page=asr&action=create">Créer une commune</a>
-    {% endif %}
-    <form method="get">
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" value="{{ app.request.get('nom') }}">
-        <label for="cp">Code Postal :</label>
-        <input type="text" id="cp" name="cp" value="{{ app.request.get('cp') }}">
-        <label for="order">Trier par :</label>
-        <select id="order" name="order">
-            <option value="">Aucun</option>
-            <option value="asc" {% if app.request.get('order') == 'asc' %}selected{% endif %}>Alphabétique</option>
-            <option value="desc" {% if app.request.get('order') == 'desc' %}selected{% endif %}>Inverse alphabétique</option>
-        </select>
-        <input type="submit" value="Filtrer">
-        <button type="submit" name="reset" value="1">Réinitialiser</button>
-    </form> 
-
-    <ul id="commune-list" style="list-style: none; padding: 0;">
-        {% for item in asr %}
-            <li class="commune-item" style="display: none;">Nom : <a href="controleur.php?page=asr&id={{ item.idt_asr }}">{{ item.nom }}</a>, Code Postal : {{ item.cp }}</li>
-        {% endfor %}
-    </ul>
-
-    <div class="pagination">
-        <button id="prev-btn">Précédent</button>
-        <span id="page-indicator"></span>
-        <button id="next-btn">Suivant</button>
-        <label for="page-select">Aller à la page :</label>
-        <input type="number" id="page-select" min="1" max="{{ totalPages }}" value="1">
+    <div class="p-6 flex justify-between items-center">
+        <div class="flex justify-center items-center">
+            <svg width="27" height="27" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M31.25 14.1111V32.2778H4V14.1111L17.625 2L31.25 14.1111Z" stroke="#4B515D" stroke-width="2.14697" stroke-linejoin="round"/>
+                <path d="M4 17.139H31.25M9.29861 9.56958V32.2779M25.9514 9.56958V32.2779M14.5972 23.1946H20.6528V32.2779H14.5972V23.1946Z" stroke="#4B515D" stroke-width="2.14697" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>            
+            <h1 class="text-2xl font-bold mt-1 ml-2">Vue des communes</h1>
+        </div>
+    
+            <div class="flex justify-between items-center">
+                {% if session.username is defined %}
+                <div class="mr-2">
+                    <p>{{session.username}}</p>
+                    <div class="flex flex-row-reverse">
+                        {% if session.role_id == 1 %}
+                            <p class="text-zinc-600 text-xs font-light">Admin</p>
+                        {% else %}
+                            <p>Gestionnaire</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+                {% endif %}
+            </div>
+    
     </div>
-    <!-- jQuery -->
+
+    <div class="w-full h-5/6 flex justify-center items-center">
+
+        <section class="w-9/12 p-12 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+            <div class="mb-4 flex flex-column justify-between items-center">
+                <form method="get">
+                    <label for="order">Trier par :</label>
+                    <select id="order" name="order">
+                        <option value="">Aucun</option>
+                        <option value="asc" {% if app.request.get('order') == 'asc' %}selected{% endif %}>A-Z</option>
+                        <option value="desc" {% if app.request.get('order') == 'desc' %}selected{% endif %}>Z-A</option>
+                    </select>
+                    <label for="nom">Nom :</label>
+                    <input type="text" id="nom" name="nom" value="{{ app.request.get('nom') }}">
+
+                    <div>
+                        <input type="submit" value="Filtrer">
+                        <button type="submit" name="reset" value="1">Réinitialiser</button>
+                    </div>
+                </form> 
+            </div>
+            
+            <div class="relative overflow-x-auto sm:rounded-t-lg mb-4">
+                <table class="w-full text-sm text-left rtl:text-right ">
+                    <thead class=" text-xs uppercase bg-gray-200  ">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                Id
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Nom
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Code Postal
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in asr %}
+                            <tr class="commune-item odd:bg-neutral-50 even:bg-gray-100 " style="display: none;">
+                                <td class="px-6 py-4">
+                                    {{ item.idt_asr }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a href="controleur.php?page=asr&id={{ item.idt_asr }}">{{ item.nom }}</a>
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ item.cp }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a href="controleur.php?page=asr&id={{ item.idt_asr }}">
+                                        <div class="w-6 h-6 border border-blue-300 rounded flex justify-center items-center hover:bg-blue-50 transition duration-200">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_273_132)">
+                                                <path d="M14.7967 7.17778C14.9775 7.4033 15.0777 7.69628 15.0777 8.00007C15.0777 8.30385 14.9775 8.59684 14.7967 8.82235C13.6512 10.2092 11.0439 12.9092 8.00028 12.9092C4.95664 12.9092 2.34937 10.2092 1.20391 8.82235C1.023 8.59684 0.922852 8.30385 0.922852 8.00007C0.922852 7.69628 1.023 7.4033 1.20391 7.17778C2.34937 5.79094 4.95664 3.09091 8.00028 3.09091C11.0439 3.09091 13.6512 5.79094 14.7967 7.17778Z" stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M8.00018 10.1818C9.20516 10.1818 10.182 9.20499 10.182 8.00001C10.182 6.79502 9.20516 5.81819 8.00018 5.81819C6.79519 5.81819 5.81836 6.79502 5.81836 8.00001C5.81836 9.20499 6.79519 10.1818 8.00018 10.1818Z" stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </g>
+                                                <defs>
+                                                <clipPath id="clip0_273_132">
+                                                <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.36377 0.363632)"/>
+                                                </clipPath>
+                                                </defs>
+                                                </svg>
+                                        </div>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="pagination flex justify-between items-center mt-4">
+                <button id="prev-btn" class="px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">Précédent</button>
+                <span id="page-indicator"></span>
+                <button id="next-btn" class="px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">Suivant</button>
+                <div class="flex items-center">
+                    <label for="page-select" class="mr-2">Aller à la page :</label>
+                    <input type="number" id="page-select" min="1" max="{{ totalPages }}" value="1" class="border-2 border-gray-300 rounded px-2 py-1">
+                </div>
+            </div>
+        </section>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <!-- jQuery UI -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <!-- jQuery UI CSS -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
@@ -55,7 +133,7 @@
             });
 
             // Pagination
-            const itemsPerPage = 15;
+            const itemsPerPage = 7;
             const items = $(".commune-item");
             const totalPages = Math.ceil(items.length / itemsPerPage);
             let currentPage = 1;
