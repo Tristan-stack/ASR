@@ -1,48 +1,223 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Page detail</h1>
+<div class="p-4 flex justify-between items-center">
+    <div class="flex justify-center items-center">
+        <svg width="27" height="27" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.25 14.1111V32.2778H4V14.1111L17.625 2L31.25 14.1111Z" stroke="#4B515D" stroke-width="2.14697"
+                stroke-linejoin="round" />
+            <path
+                d="M4 17.139H31.25M9.29861 9.56958V32.2779M25.9514 9.56958V32.2779M14.5972 23.1946H20.6528V32.2779H14.5972V23.1946Z"
+                stroke="#4B515D" stroke-width="2.14697" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <h1 class="text-2xl font-bold mt-1 ml-2">Détails de la commune</h1>
+    </div>
 
-    <p>Nom : {{ asr.nom }}</p>
-    <p>Code Postal : {{ asr.cp }}</p>
-
-    {# <a href="controleur.php?page=asr&action=update&id={{ asr.idt_asr }}">Modifier</a>
-    <a href="controleur.php?page=asr&action=delete&id={{ asr.idt_asr }}">Supprimer</a> #}
-
-    <h2>Rapports associé à cette commune :</h2>
-
-    {% for category_name, documents in documentsByCategory %}
-        <input type="checkbox" class="category-checkbox" id="{{ category_name }}" name="{{ category_name }}" checked>
-        <label for="{{ category_name }}">Afficher {{ category_name }}</label>
-    {% endfor %}
-
-    {% for category_name, documents in documentsByCategory %}
-        <div class="category" data-category="{{ category_name }}">
-            <h4>Catégorie : {{ category_name }}</h4>
-            {% for document in documents %}
-                <ul>
-                    <li>
-                        {{ document.titre }}
-                    </li>
-                </ul>
-            {% endfor %}
+    <div class="flex justify-between items-center">
+        {% if session.username is defined %}
+        <div class="mr-2">
+            <p>{{session.username}}</p>
+            <div class="flex flex-row-reverse">
+                {% if session.role_id == 1 %}
+                <p class="text-zinc-600 text-xs font-light">Admin</p>
+                {% else %}
+                <p>Gestionnaire</p>
+                {% endif %}
+            </div>
         </div>
-    {% endfor %}
+        <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+        {% endif %}
+    </div>
+</div>
 
-    <script>
-        var checkboxes = document.querySelectorAll('.category-checkbox');
-        var categories = document.querySelectorAll('.category');
+<main class="w-full h-5/6 flex justify-center items-start mt-4">
+    <div class="mt-2 w-11/12 h-4/6 flex justify-between items-start">
+        <div class="w-5/12 py-4 px-4 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+            <div>
+                <h3 class="text-xl font-bold">{{ asr.nom }}</h3>
+                <p class="mt-2 text-sm">Code postal : {{ asr.cp }}</p>
+            </div>
+        </div>
 
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                var category = this.getAttribute('id');
+        {# <a href="controleur.php?page=asr&action=update&id={{ asr.idt_asr }}">Modifier</a>
+        <a href="controleur.php?page=asr&action=delete&id={{ asr.idt_asr }}">Supprimer</a> #}
 
-                categories.forEach(function(categoryDiv) {
-                    if (categoryDiv.getAttribute('data-category') === category) {
-                        categoryDiv.style.display = this.checked ? 'block' : 'none';
-                    }
-                }.bind(this));
+        <div class="w-6/12 p-4 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+            <h2 class="text-xl font-bold">Document(s) associée à la commune :</h2>
+
+            {% for category_name, documents in documentsByCategory %}
+            {% set first_document = documents|first %}
+            {% if first_document.type_doc != 1 and first_document.type_doc != 2 %}
+            <button type="button"
+                class="category-button mb-4 mt-2 px-4 py-2 text-white text-xs rounded-full border transition duration-200"
+                id="{{ category_name }}" name="{{ category_name }}" {% if first_document.type_doc==3 %}
+                style="background-color: blue; border-color: blue;" data-color="blue" {% elseif
+                first_document.type_doc==4 %} style="background-color: brown; border-color: brown;" data-color="brown"
+                {% elseif first_document.type_doc==5 %} style="background-color: pink; border-color: pink;"
+                data-color="pink" {% elseif first_document.type_doc==6 %}
+                style="background-color: green; border-color: green;" data-color="green" {% endif %}>
+                {% if first_document.type_doc == 3 %}
+                Rapport EAU
+                {% elseif first_document.type_doc == 4 %}
+                Rapport ASS
+                {% elseif first_document.type_doc == 5 %}
+                Rapport ANC
+                {% elseif first_document.type_doc == 6 %}
+                Rapport GCE
+                {% else %}
+                Afficher {{ category_name }}
+                {% endif %}
+            </button>
+            {% endif %}
+            {% endfor %}
+
+            <div class="sm:rounded-t-lg mb-4">
+                <table class="w-full text-sm text-left rtl:text-right ">
+                    <thead class=" text-xs uppercase bg-gray-200  ">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                Id
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Nom
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Categories
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category_name, documents in documentsByCategory %}
+                        {% set first_document = documents|first %}
+                        {% if first_document.type_doc != 1 and first_document.type_doc != 2 %}
+                        {% for document in documents %}
+                        <tr class="commune-item odd:bg-neutral-50 even:bg-gray-100" data-category="{{ category_name }}">
+                            <td class="px-6 py-4">
+                                {{ document.idt_doc }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ document.titre }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if document.type_doc == 3 %}
+                                <span class="inline-block h-4 w-4 bg-blue-500 ml-2 rounded-full"></span>
+                                {% elseif document.type_doc == 4 %}
+                                <span class="inline-block h-4 w-4 bg-amber-900 ml-2 rounded-full"></span>
+                                {% elseif document.type_doc == 5 %}
+                                <span class="inline-block h-4 w-4 bg-pink-200 ml-2 rounded-full"></span>
+                                {% elseif document.type_doc == 6 %}
+                                <span class="inline-block h-4 w-4 bg-green-500 ml-2 rounded-full"></span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex">
+                                    <a href="controleur.php?page=documents&action=read&id={{ document.idt_doc }}">
+                                        <div class="w-6 h-6 border border-blue-300 rounded flex justify-center items-center hover:bg-blue-50 transition duration-200">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_273_132)">
+                                                <path d="M14.7967 7.17778C14.9775 7.4033 15.0777 7.69628 15.0777 8.00007C15.0777 8.30385 14.9775 8.59684 14.7967 8.82235C13.6512 10.2092 11.0439 12.9092 8.00028 12.9092C4.95664 12.9092 2.34937 10.2092 1.20391 8.82235C1.023 8.59684 0.922852 8.30385 0.922852 8.00007C0.922852 7.69628 1.023 7.4033 1.20391 7.17778C2.34937 5.79094 4.95664 3.09091 8.00028 3.09091C11.0439 3.09091 13.6512 5.79094 14.7967 7.17778Z" stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M8.00018 10.1818C9.20516 10.1818 10.182 9.20499 10.182 8.00001C10.182 6.79502 9.20516 5.81819 8.00018 5.81819C6.79519 5.81819 5.81836 6.79502 5.81836 8.00001C5.81836 9.20499 6.79519 10.1818 8.00018 10.1818Z" stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </g>
+                                                <defs>
+                                                <clipPath id="clip0_273_132">
+                                                <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.36377 0.363632)"/>
+                                                </clipPath>
+                                                </defs>
+                                                </svg>
+                                        </div>
+                                    </a>
+                                    {% if session.username is defined %}
+                                    <a href="controleur.php?page=documents&action=update&id={{ document.idt_doc }}">
+                                        <div class="w-6 h-6 mx-2 border border-green-500 rounded flex justify-center items-center hover:bg-green-50 transition duration-200">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_177_1499)">
+                                                <path d="M5.81815 13.7164L0.909058 15.091L2.2836 10.1819L11.2727 1.23643C11.3743 1.13253 11.4957 1.04997 11.6295 0.993603C11.7635 0.937238 11.9074 0.908203 12.0527 0.908203C12.198 0.908203 12.3419 0.937238 12.4759 0.993603C12.6097 1.04997 12.7311 1.13253 12.8327 1.23643L14.7636 3.17825C14.8658 3.27966 14.947 3.40032 15.0024 3.53325C15.0578 3.66619 15.0863 3.80878 15.0863 3.95279C15.0863 4.0968 15.0578 4.2394 15.0024 4.37233C14.947 4.50527 14.8658 4.62593 14.7636 4.72734L5.81815 13.7164Z" stroke="#02986A" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </g>
+                                                <defs>
+                                                <clipPath id="clip0_177_1499">
+                                                <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.363647 0.36377)"/>
+                                                </clipPath>
+                                                </defs>
+                                            </svg>                                                    
+                                        </div>
+                                    </a>
+                                    {% endif %}
+                                    {% if session.role_id == 1 %}
+                                        <a href="controleur.php?page=documents&action=delete&id={{ document.idt_doc }}">
+                                            <div class="w-6 h-6 border border-red-500 rounded flex justify-center items-center hover:bg-red-50 transition duration-200">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <g clip-path="url(#clip0_177_1489)">
+                                                    <path d="M1.45459 4.18213H14.5455" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M3.09094 4.18213H12.9091V14.0003C12.9091 14.2896 12.7941 14.5671 12.5896 14.7717C12.3851 14.9762 12.1075 15.0912 11.8182 15.0912H4.18185C3.89252 15.0912 3.61505 14.9762 3.41046 14.7717C3.20588 14.5671 3.09094 14.2896 3.09094 14.0003V4.18213Z" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M5.27283 4.18191V3.63645C5.27283 2.91314 5.56016 2.21944 6.07162 1.70798C6.58309 1.19652 7.27678 0.90918 8.0001 0.90918C8.72342 0.90918 9.41711 1.19652 9.92858 1.70798C10.44 2.21944 10.7274 2.91314 10.7274 3.63645V4.18191" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M6.36365 7.45605V11.8214" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M9.63635 7.45605V11.8214" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </g>
+                                                    <defs>
+                                                    <clipPath id="clip0_177_1489">
+                                                    <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.363647 0.36377)"/>
+                                                    </clipPath>
+                                                    </defs>
+                                                </svg>
+                                                        
+                                            </div>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    var buttons = document.querySelectorAll('.category-button');
+    var categories = document.querySelectorAll('.category');
+    var tableRows = document.querySelectorAll('.commune-item');
+
+    buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var category = this.getAttribute('id');
+
+            categories.forEach(function (categoryDiv) {
+                if (categoryDiv.getAttribute('data-category') === category) {
+                    toggleDisplay(categoryDiv, button);
+                }
+            });
+
+            tableRows.forEach(function (tableRow) {
+                if (tableRow.getAttribute('data-category') === category) {
+                    toggleDisplay(tableRow, button);
+                }
             });
         });
-    </script>
+    });
+
+    function toggleDisplay(element, button) {
+        if (element.style.display === 'none') {
+            element.style.display = element.tagName === 'TR' ? 'table-row' : 'block';
+            button.classList.remove('text-blue-600', 'hover:bg-blue-50');
+            button.classList.add('text-white');
+            button.style.backgroundColor = button.getAttribute('data-color'); 
+            button.style.borderColor = button.getAttribute('data-color'); 
+            button.style.color = 'white'; 
+        } else {
+            element.style.display = 'none';
+            button.classList.remove('text-white');
+            button.style.backgroundColor = 'transparent'; 
+            button.style.borderColor = button.getAttribute('data-color');
+            button.style.color = button.getAttribute('data-color');
+        }
+    }
+</script>
 {% endblock %}
