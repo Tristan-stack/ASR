@@ -5,48 +5,117 @@
     <a href="#" id="link2">Gestion categories</a>
     <a href="#" id="link3">Gestion communes</a> #}
 
-    <div id="content1">
-        <h1>Bienvenue sur la liste des comptes</h1>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Username</th>
-                <th>Role</th>
-                {# <th>Roles</th> #}
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-                {% if user.id != session.id %}
-                    <tr>
-                        <td class="editable" data-id="{{ user.id }}" data-field="id">{{ user.id }}</td>
-                        <td class="editable" data-id="{{ user.id }}" data-field="email">{{ user.email }}</td>
-                        <td class="editable" data-id="{{ user.id }}" data-field="username">{{ user.username }}</td>
-                        <td>
-                            <select class="role-select" data-id="{{ user.id }}" data-field="role_id">
-                                <option selected disabled>Choisissez le rôle</option>
-                                {% for role in roles %}
-                                    <option value="{{ role.id }}" {% if role.id == user.role_id %}selected{% endif %}>{{ role.role }}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td>
-                            {% if session.role_id == 1 %}
-                                <button class="save-btn" data-id="{{ user.id }}">Valider</button>
-                                <a href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
-                                <p class="message" data-id="{{ user.id }}" style="display: none;"></p> 
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-        <h3><a href="controleur.php?page=user&action=create">Ajouter</a> un utilisateur</h3>
-    </table>
+    <div class="p-4 flex justify-between items-center">
+        <div class="flex justify-center items-center">
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.7274 20.9471C19.2716 19.6713 18.2672 18.5439 16.8701 17.7399C15.4729 16.9358 13.7611 16.5 12 16.5C10.2389 16.5 8.52706 16.9358 7.12991 17.7399C5.73276 18.5439 4.72839 19.6713 4.27259 20.9471" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="8.5" r="4" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <h1 class="text-2xl font-bold mt-1 ml-2">Liste des comptes</h1>
+        </div>
+    
+        <div class="flex justify-between items-center">
+            {% if session.username is defined %}
+            <div class="mr-2">
+                <p>{{session.username}}</p>
+                <div class="flex flex-row-reverse">
+                    {% if session.role_id == 1 %}
+                    <p class="text-zinc-600 text-xs font-light">Admin</p>
+                    {% else %}
+                    <p>Gestionnaire</p>
+                    {% endif %}
+                </div>
+            </div>
+            <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+            {% endif %}
+        </div>
     </div>
+
+
+    <main class="w-full h-5/6 flex flex-col justify-start items-center mt-4">
+        <div class="w-10/12 p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+            <div class="border-b border-neutral-200 mb-4">
+                <h3 class="inline-block mb-4 px-4 py-2 text-green-600 rounded hover:bg-green-50 border border-green-600 transition duration-200 cursor-pointer"><a href="controleur.php?page=user&action=create">Ajouter</a> un utilisateur</h3>
+            </div>
+            <div class="sm:rounded-t-lg mb-4">
+                <table class="w-full text-sm text-left rtl:text-right ">
+                    <thead class=" text-xs uppercase bg-gray-200  ">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                Id
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Email
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Username
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Role
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        {% if user.id != session.id %}
+                        <tr class="commune-item odd:bg-neutral-50 even:bg-gray-100">
+                            <td class="px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                                {{ user.id }}
+                            </td>
+                            <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="email">
+                                {{ user.email }}
+                            </td>
+                            <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="username">
+                                {{ user.username }}
+                            </td>
+                            <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                                <select class="role-select px-4 py-2 text-blue-600 rounded border border-blue-300" data-id="{{ user.id }}" data-field="role_id">
+                                    <option selected disabled>Choisissez le rôle</option>
+                                    {% for role in roles %}
+                                    <option value="{{ role.id }}" {% if role.id==user.role_id %}selected{% endif %}>{{ role.role }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+            
+                            <td class="px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                                {% if session.role_id == 1 %}
+                                <button class="save-btn mr-2 px-4 py-2 text-green-600 rounded hover:bg-green-600 hover:text-white border border-green-600 transition duration-200 cursor-pointer" data-id="{{ user.id }}">Valider</button>
+                                <a class="mr-2 px-4 py-2 text-red-600 rounded hover:bg-red-600 border hover:text-white border-red-600 transition duration-200 cursor-pointer" href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
+                                <p class="message" data-id="{{ user.id }}" style="display: none;"></p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination flex justify-between items-center mt-4">
+                <div class="w-40 flex items-center justify-between">
+                    <button id="prev-btn" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.4415 4.94L9.50146 4L5.50146 8L9.50146 12L10.4415 11.06L7.38813 8L10.4415 4.94Z" fill="blue" fill-opacity="0.54"/>
+                            </svg>
+                    </button>
+                    <span id="page-indicator" class="text-xs"></span>
+                    <button id="next-btn" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.83453 4L5.89453 4.94L8.94786 8L5.89453 11.06L6.83453 12L10.8345 8L6.83453 4Z" fill="blue" fill-opacity="0.54"/>
+                            </svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center">
+                    <label for="page-select" class="mr-2 text-xs">Aller à la page :</label>
+                    <input type="number" id="page-select" min="1" max="{{ totalPages }}" value="1" class="w-10 border border-blue-300 rounded px-2 py-1">
+                </div>
+            </div>
+        </div>
+    </main>
 
     {# <div id="content2" style="display: none;">
         <h1>OUI</h1>
@@ -86,16 +155,6 @@
             $(this).attr('contenteditable', 'true');
         });
     
-        $(".editable").on('input', function(){
-            var id = $(this).data('id');
-            $('.message[data-id="' + id + '"]').text("N'oubliez pas de valider les modifications !").show();
-        });
-    
-        $(".role-select").change(function(){
-            var id = $(this).data('id');
-            $('.message[data-id="' + id + '"]').text("N'oubliez pas de valider les modifications !").show();
-        });
-    
         $(".save-btn").click(function(){
             var id = $(this).data('id');
             var data = {};
@@ -107,7 +166,7 @@
                 var field = $(this).data('field');
                 data[field] = $(this).val();
             });
-    
+        
             $.ajax({
                 url: 'controleur.php?page=admin&action=update&id=' + id,
                 type: 'POST',
@@ -124,10 +183,75 @@
                     }).showToast();
                 },
                 error: function(response) {
-                 
+                    // handle error
                 }
             });
         });
+    });
+    $(document).ready(function(){
+        var itemsPerPage = 5;
+        var items = $("tbody tr");
+        var numItems = items.length;
+        var numPages = Math.ceil(numItems / itemsPerPage);
+    
+        items.hide();
+        items.slice(0, itemsPerPage).show();
+    
+        var currentPage = 1;
+        updatePage();
+    
+        $('#prev-btn').click(function() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePage();
+            }
+        });
+    
+        $('#next-btn').click(function() {
+            if (currentPage < numPages) {
+                currentPage++;
+                updatePage();
+            }
+        });
+    
+        $('#page-select').change(function() {
+            var selectedPage = $(this).val();
+            if (selectedPage >= 1 && selectedPage <= numPages) {
+                currentPage = selectedPage;
+                updatePage();
+            }
+        });
+    
+        function updatePage() {
+            var startItem = (currentPage - 1) * itemsPerPage;
+            var endItem = startItem + itemsPerPage;
+            items.css('display', 'none').slice(startItem, endItem).css('display', 'table-row');
+            $('#page-indicator').text('Page ' + currentPage + ' sur ' + numPages);
+            $('#page-select').val(currentPage);
+        }
+    });
+    $(".editable").on('focusout', function(){
+        var id = $(this).data('id');
+        Toastify({
+            text: "N'oubliez pas de valider les modifications !",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: 'center', 
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+        }).showToast();
+    });
+    
+    $(".role-select").on('focusout', function(){
+        var id = $(this).data('id');
+        Toastify({
+            text: "N'oubliez pas de valider les modifications !",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: 'center', 
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+        }).showToast();
     });
 </script>
 {% endblock %}

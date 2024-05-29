@@ -6,44 +6,50 @@
                     Id
                 </th>
                 <th scope="col" class="px-6 py-4">
-                    Nom
+                    Email
                 </th>
                 <th scope="col" class="px-6 py-4">
-                    Categories
+                    Username
                 </th>
                 <th scope="col" class="px-6 py-4">
-                    Action
+                    Role
+                </th>
+                <th scope="col" class="px-6 py-4">
+                    Actions
                 </th>
             </tr>
         </thead>
         <tbody>
-            {% for category_name, documents in documentsByCategory %}
-            {% set first_document = documents|first %}
-            {% if first_document.type_doc != 1 and first_document.type_doc != 2 %}
-            {% for document in documents %}
-            <tr class="commune-item odd:bg-neutral-50 even:bg-gray-100">
-                <td class="px-6 py-4">
-                    {{ document.idt_doc }}
+            {% for user in users %}
+            {% if user.id != session.id %}
+            <tr class="editable commune-item odd:bg-neutral-50 even:bg-gray-100">
+                <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                    {{ user.id }}
                 </td>
-                <td class="px-6 py-4">
-                    {{ document.titre }} : {{document.type_doc}}
+                <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                    {{ user.email }}
                 </td>
-                <td class="px-6 py-4">
-                    {% if document.type_doc == 3 %}
-                    <span class="inline-block h-4 w-4 bg-blue-500 ml-2 rounded-full"></span>
-                    {% elseif document.type_doc == 4 %}
-                    <span class="inline-block h-4 w-4 bg-amber-900 ml-2 rounded-full"></span>
-                    {% elseif document.type_doc == 5 %}
-                    <span class="inline-block h-4 w-4 bg-pink-200 ml-2 rounded-full"></span>
-                    {% elseif document.type_doc == 6 %}
-                    <span class="inline-block h-4 w-4 bg-green-500 ml-2 rounded-full"></span>
+                <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                    {{ user.username }}
+                </td>
+                <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                    <select class="role-select" data-id="{{ user.id }}" data-field="role_id">
+                        <option selected disabled>Choisissez le rôle</option>
+                        {% for role in roles %}
+                        <option value="{{ role.id }}" {% if role.id==user.role_id %}selected{% endif %}>{{ role.role }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                    {% if session.role_id == 1 %}
+                    <button class="save-btn" data-id="{{ user.id }}">Valider</button>
+                    <a href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
+                    <p class="message" data-id="{{ user.id }}" style="display: none;"></p>
                     {% endif %}
                 </td>
-                <td class="px-6 py-4">
-                    <p>VOIR</p>
-                </td>
             </tr>
-            {% endfor %}
             {% endif %}
             {% endfor %}
         </tbody>

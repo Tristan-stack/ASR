@@ -244,7 +244,7 @@ switch($page){
             case 'delete':
                 $id = $_GET['id'];
                 User::delete($id);
-                header('Location: controleur.php?page=user&action=read');
+                header('Location: controleur.php?page=admin&action=read');
                 exit();
                 break;
         }

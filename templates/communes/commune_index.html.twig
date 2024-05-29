@@ -105,12 +105,23 @@
             </div>
         
             <div class="pagination flex justify-between items-center mt-4">
-                <button id="prev-btn" class="px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">Précédent</button>
-                <span id="page-indicator"></span>
-                <button id="next-btn" class="px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">Suivant</button>
+                <div class="w-40 flex items-center justify-between">
+                    <button id="prev-btn" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.4415 4.94L9.50146 4L5.50146 8L9.50146 12L10.4415 11.06L7.38813 8L10.4415 4.94Z" fill="blue" fill-opacity="0.54"/>
+                            </svg>
+                    </button>
+                    <span id="page-indicator" class="text-xs"></span>
+                    <button id="next-btn" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.83453 4L5.89453 4.94L8.94786 8L5.89453 11.06L6.83453 12L10.8345 8L6.83453 4Z" fill="blue" fill-opacity="0.54"/>
+                            </svg>
+                    </button>
+                </div>
+
                 <div class="flex items-center">
-                    <label for="page-select" class="mr-2">Aller à la page :</label>
-                    <input type="number" id="page-select" min="1" max="{{ totalPages }}" value="1" class="border-2 border-gray-300 rounded px-2 py-1">
+                    <label for="page-select" class="mr-2 text-xs">Aller à la page :</label>
+                    <input type="number" id="page-select" min="1" max="{{ totalPages }}" value="1" class="w-10 border border-blue-300 rounded px-2 py-1">
                 </div>
             </div>
         </section>
