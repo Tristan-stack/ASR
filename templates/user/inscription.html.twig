@@ -5,10 +5,10 @@
 <form action="controleur.php?page=user&action=create" method="post">
     
     <label for="username">Nom d'utilisateur:</label>
-    <input type="text" id="username" name="username" required>
+    <input type="text" id="username" name="username" autocomplete="off" required>
     
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="@sdea.fr" pattern=".+@sdea\.fr$" required>
+    <input type="email" id="email" name="email" value="@sdea.fr" pattern=".+@sdea\.fr$" autocomplete="off" required>
 
     <label for="role_id">Rôle:</label>
     <select name="role_id">
@@ -19,7 +19,7 @@
     </select>
     
     <label for="password">Mot de passe:</label>
-    <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" required>
+    <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" autocomplete="off" required>
     <p id="passwordLengthCondition" style="color: red;">6 caractères.</p>
     <p id="passwordUppercaseCondition" style="color: red;">Une majuscule.</p>
     <p id="passwordNumberCondition" style="color: red;">1 chiffre.</p>

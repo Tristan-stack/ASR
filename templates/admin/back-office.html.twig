@@ -35,7 +35,7 @@
     <main class="w-full h-5/6 flex flex-col justify-start items-center mt-4">
         <div class="w-10/12 p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
             <div class="border-b border-neutral-200 mb-4">
-                <h3 class="inline-block mb-4 px-4 py-2 text-green-600 rounded hover:bg-green-50 border border-green-600 transition duration-200 cursor-pointer"><a href="controleur.php?page=user&action=create">Ajouter</a> un utilisateur</h3>
+                <a href="controleur.php?page=user&action=create"><h3 class="inline-block mb-4 px-4 py-2 text-green-600 rounded hover:bg-green-50 border border-green-600 transition duration-200 cursor-pointer">Ajouter un utilisateur</h3></a> 
             </div>
             <div class="sm:rounded-t-lg mb-4">
                 <table class="w-full text-sm text-left rtl:text-right ">
@@ -62,17 +62,21 @@
                         {% for user in users %}
                         {% if user.id != session.id %}
                         <tr class="commune-item odd:bg-neutral-50 even:bg-gray-100">
-                            <td class="px-6 py-4" data-id="{{ user.id }}" data-field="id">
+                            <td class="px-3 py-1" data-id="{{ user.id }}" data-field="id">
                                 {{ user.id }}
                             </td>
-                            <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="email">
-                                {{ user.email }}
+                            <td class="px-3 py-1" data-id="{{ user.id }}" data-field="id">
+                                <span class="editable border border-gray-200 px-4 py-2 rounded" data-id="{{ user.id }}" data-field="email">
+                                    {{ user.email }}
+                                </span>
                             </td>
-                            <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="username">
-                                {{ user.username }}
+                            <td class="px-3 py-1" data-id="{{ user.id }}" data-field="id">
+                                <span class="editable border border-gray-200 px-4 py-2 rounded" data-id="{{ user.id }}" data-field="username">
+                                    {{ user.username }}
+                                </span>
                             </td>
-                            <td class="editable px-6 py-4" data-id="{{ user.id }}" data-field="id">
-                                <select class="role-select px-4 py-2 text-blue-600 rounded border border-blue-300" data-id="{{ user.id }}" data-field="role_id">
+                            <td class="editable px-3 py-1" data-id="{{ user.id }}" data-field="id" >
+                                <select class="role-select px-4 py-2 text-blue-600 rounded border border-gray-400" data-id="{{ user.id }}" data-field="role_id" disabled>
                                     <option selected disabled>Choisissez le rôle</option>
                                     {% for role in roles %}
                                     <option value="{{ role.id }}" {% if role.id==user.role_id %}selected{% endif %}>{{ role.role }}
@@ -83,8 +87,23 @@
             
                             <td class="px-6 py-4" data-id="{{ user.id }}" data-field="id">
                                 {% if session.role_id == 1 %}
-                                <button class="save-btn mr-2 px-4 py-2 text-green-600 rounded hover:bg-green-600 hover:text-white border border-green-600 transition duration-200 cursor-pointer" data-id="{{ user.id }}">Valider</button>
-                                <a class="mr-2 px-4 py-2 text-red-600 rounded hover:bg-red-600 border hover:text-white border-red-600 transition duration-200 cursor-pointer" href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
+                                <button class="edit-btn mr-2 px-4 py-2 text-green-600 rounded hover:bg-green-600 hover:text-white border border-green-600 transition duration-200 cursor-pointer" data-id="{{ user.id }}">Modifier</button>
+                                <button class="save-btn mr-2 px-4 py-2 text-green-600 rounded hover:bg-green-600 hover:text-white border border-green-600 transition duration-200 cursor-pointer" data-id="{{ user.id }}" style="display: none;">Valider</button>
+                                <a class="delete-btn mr-2 px-4 py-2 text-red-600 rounded hover:bg-red-600 border hover:text-white border-red-600 transition duration-200 cursor-pointer" href="controleur.php?page=user&action=delete&id={{user.id}}">Supprimer</a>
+                                <button class="cancel-btn mr-2 px-1 py-1 text-red-600 rounded hover:bg-red-100 border hover:text-white border-red-600 transition duration-200 cursor-pointer" data-id="{{ user.id }}" style="display: none;">
+                                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_234_2381)">
+                                        <path d="M13.5 0.5L0.5 13.5" stroke="red" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M0.5 0.5L13.5 13.5" stroke="red" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <defs>
+                                        <clipPath id="clip0_234_2381">
+                                        <rect width="14" height="14" fill="white"/>
+                                        </clipPath>
+                                        </defs>
+                                        </svg>
+                                        
+                                </button>
                                 <p class="message" data-id="{{ user.id }}" style="display: none;"></p>
                                 {% endif %}
                             </td>
@@ -125,133 +144,131 @@
     </div> #}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function(){
-        $("#link1").click(function(){
-            $("#content1").show();
-            $("#content2").hide();
-            $("#content3").hide();
-            $(".active").removeClass("active");
-            $(this).addClass("active");
-        });
-    
-        $("#link2").click(function(){
-            $("#content1").hide();
-            $("#content2").show();
-            $("#content3").hide();
-            $(".active").removeClass("active");
-            $(this).addClass("active");
-        });
-    
-        $("#link3").click(function(){
-            $("#content1").hide();
-            $("#content2").hide();
-            $("#content3").show();
-            $(".active").removeClass("active");
-            $(this).addClass("active");
-        });
-    
-        $(".editable").click(function(){
-            $(this).attr('contenteditable', 'true');
-        });
-    
-        $(".save-btn").click(function(){
-            var id = $(this).data('id');
-            var data = {};
-            $('.editable[data-id="' + id + '"]').each(function() {
-                var field = $(this).data('field');
-                data[field] = $(this).text();
+    <script>
+        $(document).ready(function(){
+            $("#link1").click(function(){
+                $("#content1").show();
+                $("#content2").hide();
+                $("#content3").hide();
+                $(".active").removeClass("active");
+                $(this).addClass("active");
             });
-            $('.role-select[data-id="' + id + '"]').each(function() {
-                var field = $(this).data('field');
-                data[field] = $(this).val();
+    
+            $("#link2").click(function(){
+                $("#content1").hide();
+                $("#content2").show();
+                $("#content3").hide();
+                $(".active").removeClass("active");
+                $(this).addClass("active");
             });
-        
-            $.ajax({
-                url: 'controleur.php?page=admin&action=update&id=' + id,
-                type: 'POST',
-                data: data,
-                success: function(response) {
-                    $('.message[data-id="' + id + '"]').hide();
-                    Toastify({
-                        text: "Modifications enregistrées avec succès !",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: 'center', 
-                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                    }).showToast();
-                },
-                error: function(response) {
-                    // handle error
+    
+            $("#link3").click(function(){
+                $("#content1").hide();
+                $("#content2").hide();
+                $("#content3").show();
+                $(".active").removeClass("active");
+                $(this).addClass("active");
+            });
+    
+            $(".edit-btn").click(function(){
+                var id = $(this).data('id');
+                $('td > .editable[data-id="' + id + '"]').attr('contenteditable', 'true').removeClass('border-gray-200').addClass('border-blue-500');
+                $('.role-select[data-id="' + id + '"]').prop('disabled', false).removeClass('border-gray-200').addClass('border-blue-500');
+                $(this).hide();
+                $('.save-btn[data-id="' + id + '"]').show();
+                $('.delete-btn[data-id="' + id + '"]').hide();
+                $('.cancel-btn[data-id="' + id + '"]').show();
+            });
+    
+            $(".cancel-btn").click(function(){
+                var id = $(this).data('id');
+                $('td > .editable[data-id="' + id + '"]').attr('contenteditable', 'false').removeClass('border-blue-500').addClass('border-gray-200');
+                $('.role-select[data-id="' + id + '"]').prop('disabled', true).removeClass('border-blue-500').addClass('border-gray-200');
+                $(this).hide();
+                $('.delete-btn[data-id="' + id + '"]').show();
+                $('.save-btn[data-id="' + id + '"]').hide();
+                $('.edit-btn[data-id="' + id + '"]').show();
+            });
+    
+            $(".save-btn").click(function(){
+                var id = $(this).data('id');
+                var data = {};
+                $('td > .editable[data-id="' + id + '"]').each(function() {
+                    var field = $(this).data('field');
+                    data[field] = $(this).text();
+                });
+                $('.role-select[data-id="' + id + '"]').each(function() {
+                    var field = $(this).data('field');
+                    data[field] = $(this).val();
+                });
+            
+                $.ajax({
+                    url: 'controleur.php?page=admin&action=update&id=' + id,
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        $('.message[data-id="' + id + '"]').hide();
+                        Toastify({
+                            text: "Modifications enregistrées avec succès !",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: 'center', 
+                            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                        }).showToast();
+                        $('.editable[data-id="' + id + '"]').attr('contenteditable', 'false').removeClass('border-blue-500').addClass('border-gray-200');
+                        $('.role-select[data-id="' + id + '"]').prop('disabled', true).removeClass('border-blue-500').addClass('border-gray-200');
+                        $('.save-btn[data-id="' + id + '"]').hide();
+                        $('.edit-btn[data-id="' + id + '"]').show();
+                        $('.cancel-btn[data-id="' + id + '"]').hide();
+                        $('.delete-btn[data-id="' + id + '"]').show();
+                    },
+                    error: function(response) {
+                        alert('Erreur lors de la modification de la ligne.');
+                    }
+                });
+            });
+    
+            var itemsPerPage = 5;
+            var items = $("tbody tr");
+            var numItems = items.length;
+            var numPages = Math.ceil(numItems / itemsPerPage);
+    
+            items.hide();
+            items.slice(0, itemsPerPage).show();
+    
+            var currentPage = 1;
+            updatePage();
+    
+            $('#prev-btn').click(function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePage();
                 }
             });
-        });
-    });
-    $(document).ready(function(){
-        var itemsPerPage = 5;
-        var items = $("tbody tr");
-        var numItems = items.length;
-        var numPages = Math.ceil(numItems / itemsPerPage);
     
-        items.hide();
-        items.slice(0, itemsPerPage).show();
+            $('#next-btn').click(function() {
+                if (currentPage < numPages) {
+                    currentPage++;
+                    updatePage();
+                }
+            });
     
-        var currentPage = 1;
-        updatePage();
+            $('#page-select').change(function() {
+                var selectedPage = $(this).val();
+                if (selectedPage >= 1 && selectedPage <= numPages) {
+                    currentPage = selectedPage;
+                    updatePage();
+                }
+            });
     
-        $('#prev-btn').click(function() {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePage();
+            function updatePage() {
+                var startItem = (currentPage - 1) * itemsPerPage;
+                var endItem = startItem + itemsPerPage;
+                items.css('display', 'none').split(startItem, endItem).css('display', 'table-row');
+                $('#page-indicator').text('Page ' + currentPage + ' sur ' + numPages);
+                $('#page-select').val(currentPage);
             }
         });
-    
-        $('#next-btn').click(function() {
-            if (currentPage < numPages) {
-                currentPage++;
-                updatePage();
-            }
-        });
-    
-        $('#page-select').change(function() {
-            var selectedPage = $(this).val();
-            if (selectedPage >= 1 && selectedPage <= numPages) {
-                currentPage = selectedPage;
-                updatePage();
-            }
-        });
-    
-        function updatePage() {
-            var startItem = (currentPage - 1) * itemsPerPage;
-            var endItem = startItem + itemsPerPage;
-            items.css('display', 'none').slice(startItem, endItem).css('display', 'table-row');
-            $('#page-indicator').text('Page ' + currentPage + ' sur ' + numPages);
-            $('#page-select').val(currentPage);
-        }
-    });
-    $(".editable").on('focusout', function(){
-        var id = $(this).data('id');
-        Toastify({
-            text: "N'oubliez pas de valider les modifications !",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: 'center', 
-            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-        }).showToast();
-    });
-    
-    $(".role-select").on('focusout', function(){
-        var id = $(this).data('id');
-        Toastify({
-            text: "N'oubliez pas de valider les modifications !",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: 'center', 
-            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-        }).showToast();
-    });
-</script>
+    </script>
 {% endblock %}
