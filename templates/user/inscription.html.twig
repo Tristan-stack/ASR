@@ -1,36 +1,79 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="p-4 flex justify-between items-center">
+    <div class="flex justify-center items-center">
+        <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.7274 20.9471C19.2716 19.6713 18.2672 18.5439 16.8701 17.7399C15.4729 16.9358 13.7611 16.5 12 16.5C10.2389 16.5 8.52706 16.9358 7.12991 17.7399C5.73276 18.5439 4.72839 19.6713 4.27259 20.9471" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="8.5" r="4" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h1 class="text-2xl font-bold mt-1 ml-2">Creer un compte</h1>
+    </div>
 
-<form action="controleur.php?page=user&action=create" method="post">
-    
-    <label for="username">Nom d'utilisateur:</label>
-    <input type="text" id="username" name="username" autocomplete="off" required>
-    
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="@sdea.fr" pattern=".+@sdea\.fr$" autocomplete="off" required>
+    <div class="flex justify-between items-center">
+        {% if session.username is defined %}
+        <div class="mr-2">
+            <p>{{session.username}}</p>
+            <div class="flex flex-row-reverse">
+                {% if session.role_id == 1 %}
+                <p class="text-zinc-600 text-xs font-light">Admin</p>
+                {% else %}
+                <p>Gestionnaire</p>
+                {% endif %}
+            </div>
+        </div>
+        <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+        {% endif %}
+    </div>
+</div>
+<main class="w-full h-2/3 flex justify-center items-center">
 
-    <label for="role_id">Rôle:</label>
-    <select name="role_id">
-        <option selected disabled>Choisissez le rôle</option>
-        {% for role in roles %}
-            <option value="{{ role.id }}">{{ role.role }}</option>
-        {% endfor %}
-    </select>
-    
-    <label for="password">Mot de passe:</label>
-    <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" autocomplete="off" required>
-    <p id="passwordLengthCondition" style="color: red;">6 caractères.</p>
-    <p id="passwordUppercaseCondition" style="color: red;">Une majuscule.</p>
-    <p id="passwordNumberCondition" style="color: red;">1 chiffre.</p>
-    <p id="passwordSpecialCondition" style="color: red;">1 caractère spécial.</p>
-    
-    <input type="submit" value="S'inscrire">
-</form>
+    <form action="controleur.php?page=user&action=create" method="post" class="w-1/2 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
+        <div class="w-full  flex justify-around">
+            <div class="flex flex-col">
+                <label for="username" class="text-xs text-gray-500">Nom d'utilisateur:</label>
+                <input type="text" id="username" name="username" autocomplete="off" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="email" class="text-xs text-gray-500">Email:</label>
+                <input type="email" id="email" name="email" value="@sdea.fr" pattern=".+@sdea\.fr$" autocomplete="off" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
+            </div>
+        </div>
+        <div class="w-full  flex justify-around pt-4">
+            <div class="flex flex-col">
+                <label for="role_id" class="text-xs text-gray-500">Rôle:</label>
+                <select name="role_id" class="w-56 border border-blue-200 px-4 py-2 rounded">
+                    <option selected disabled>Choisissez le rôle</option>
+                    {% for role in roles %}
+                        <option value="{{ role.id }}">{{ role.role }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="flex flex-col">
+                <label for="password" class="text-xs text-gray-500">Mot de passe:</label>
+                <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" autocomplete="off" class="h-4/6 border border-blue-200 px-4 py-2 rounded" required>
+            </div>
+        </div>
+
+        <div class="text-sm leading-5 pl-9 my-4">
+            <p id="passwordLengthCondition" style="color: red;">6 caractères.</p>
+            <p id="passwordUppercaseCondition" style="color: red;">Une majuscule.</p>
+            <p id="passwordNumberCondition" style="color: red;">1 chiffre.</p>
+            <p id="passwordSpecialCondition" style="color: red;">1 caractère spécial.</p>
+        </div>
+        <div class="w-full flex justify-between">
+            <input type="submit" value="S'inscrire" class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">
+            <a href="controleur.php?page=home" class="mr-9 px-4 py-2 text-red-600 rounded hover:bg-red-50 border border-red-300 transition duration-200 cursor-pointer">Retour à l'accueil</a>
+        </div>
+    </form>
+</main>
+
 
 {# lien retourner a la page d'accueil #}
 
-<a href="controleur.php?page=home">Retour à l'accueil</a>
+
 
 <script>
     document.getElementById('password').addEventListener('input', function() {

@@ -1,17 +1,51 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<form action="controleur.php?page=user&action=login" method="post">
-    <label for="username">Nom d'utilisateur:</label>
-    <input type="text" id="username" name="username" required>
-    
-    <label for="password">Mot de passe:</label>
-    <input type="password" id="password" name="password" required>
-    
-    <input type="submit" value="Se connecter">
-</form>
+<div class="p-4 flex justify-between items-center">
+    <div class="flex justify-center items-center">
+        <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.7274 20.9471C19.2716 19.6713 18.2672 18.5439 16.8701 17.7399C15.4729 16.9358 13.7611 16.5 12 16.5C10.2389 16.5 8.52706 16.9358 7.12991 17.7399C5.73276 18.5439 4.72839 19.6713 4.27259 20.9471" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="8.5" r="4" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h1 class="text-2xl font-bold mt-1 ml-2">Connexion</h1>
+    </div>
 
-<p>Pas de compte ? Créer un compte <a href="controleur.php?page=user&action=create"><strong>ici</strong></a></p>
+    <div class="flex justify-between items-center">
+        {% if session.username is defined %}
+        <div class="mr-2">
+            <p>{{session.username}}</p>
+            <div class="flex flex-row-reverse">
+                {% if session.role_id == 1 %}
+                <p class="text-zinc-600 text-xs font-light">Admin</p>
+                {% else %}
+                <p>Gestionnaire</p>
+                {% endif %}
+            </div>
+        </div>
+        <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+        {% endif %}
+    </div>
+</div>
+<main class="w-full h-2/3 flex justify-center items-center">
+
+    <form action="controleur.php?page=user&action=login" method="post" class="p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
+        
+        <div class="w-full  flex flex-col justify-around items-center mb-8">
+            <div class="flex flex-col mb-4">
+                <label for="username">Nom d'utilisateur:</label>
+                <input type="text" id="username" name="username" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
+            </div>
+
+            <div class="flex flex-col">
+                <label for="password">Mot de passe:</label>
+                <input type="password" id="password" name="password" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
+            </div>
+        </div>
+        
+        
+        <input type="submit" value="Se connecter" class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">
+    </form>
+</main>
 
 
 {% if errorMessageLog is defined %}

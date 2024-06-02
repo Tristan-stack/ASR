@@ -265,7 +265,7 @@
             function updatePage() {
                 var startItem = (currentPage - 1) * itemsPerPage;
                 var endItem = startItem + itemsPerPage;
-                items.css('display', 'none').split(startItem, endItem).css('display', 'table-row');
+                items.css('display', 'none').slice(startItem, endItem).css('display', 'table-row');
                 $('#page-indicator').text('Page ' + currentPage + ' sur ' + numPages);
                 $('#page-select').val(currentPage);
             }

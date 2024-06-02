@@ -131,7 +131,7 @@ switch($page){
             case 'delete':
                 $id = $_GET['id'];
                 Asr::delete($id);
-                header('Location: controleur.php?page=asr&action=read');
+                header('Location: controleur.php?page=home');
                 exit();
                 break;
         }
@@ -159,16 +159,16 @@ switch($page){
                 $data = ['roles' => $roles]; // Passer les rôles à la vue
                 $user->chargePOST();
                 if (User::emailExists($user->email)) {
-                    echo "Email déjà utilisé.";
+                    // echo "Email déjà utilisé.";
                 } elseif (User::usernameExists($user->username)) {
-                    echo "Nom d'utilisateur déjà utilisé.";
+                    // echo "Nom d'utilisateur déjà utilisé.";
                 } elseif (empty($user->username) || empty($user->email) || empty($user->password) || empty($user->role_id)) {
-                    echo "Tous les champs sont requis.";
+                    // echo "Tous les champs sont requis.";
                 } elseif (!preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}/", $user->password)) {
-                    echo "Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial et faire au moins 6 caractères.";
+                    // echo "Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial et faire au moins 6 caractères.";
                 } else {
                     $user->create();
-                    header('Location: controleur.php?page=user&action=login');
+                    header('Location: controleur.php?page=asr&action=read');
                     exit();
                 }
                 break;
@@ -300,7 +300,6 @@ switch($page){
                     $data = ['documents' => $documents, 'asr' => $asr];
                 } else {
                     $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
-                    $limit = isset($_POST['limit']) ? (int)$_POST['limit'] : 200;
                     $action = isset($_POST['action']) ? $_POST['action'] : 'read';
                     
                     // Check if a date was sent by the form
@@ -309,11 +308,10 @@ switch($page){
                         $documents = Documents::readByDate($year);
                         // var_dump($documents);
                     } else {
-                        $documents = Documents::readAll($page, $limit);
+                        $documents = Documents::readAll(); // Removed $page and $limit
                     }
                     
                     $totalDocuments = Documents::countAll();
-                    $totalPages = ceil($totalDocuments / $limit);
                     $documentsByCategory = [];
                     foreach ($documents as $document) {
                         $categoryLabel = $document->label_type_doc;
@@ -331,9 +329,8 @@ switch($page){
                     $template = 'documents/document_index.html.twig';
                     $data = [
                         'documentsByCategory' => $documentsByCategory, 
-                        'limit' => $limit, 
                         'page' => $page, 
-                        'totalPages' => $totalPages, 
+                        'totalDocuments' => $totalDocuments, 
                         'allCategories' => $allCategories,
                         'availableDates' => $availableDates  // Ajoutez cette ligne
                     ];
@@ -442,6 +439,7 @@ switch($page){
                 break; 
             }
             break;
+            
 
     case 'categories':
         switch($action){

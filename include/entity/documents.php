@@ -17,11 +17,10 @@ class Documents{
         $this->date_doc = $date_doc;
     }
 
+
     static function readAll($page = 1, $limit = 10){
-        $offset = max(0, ($page - 1) * $limit);
         $sql = 'SELECT d.*, c.label_type_doc FROM documents d 
-                LEFT JOIN categories c ON d.type_doc = c.idt 
-                LIMIT ' . $offset . ', ' . $limit;
+                LEFT JOIN categories c ON d.type_doc = c.idt';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute();
@@ -31,6 +30,7 @@ class Documents{
         $tableau = $query->fetchAll();
         return $tableau;
     }
+
 
     static function getAllTypes(){
         $sql = 'SELECT DISTINCT type_doc FROM documents ORDER BY type_doc';

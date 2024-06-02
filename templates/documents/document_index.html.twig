@@ -4,93 +4,193 @@
 
     <h1>Liste doc</h1>
 
-    {# lien pour crrer un dossier #}
-    {% if session.role_id == 1 or session.role_id == 2 %}
-        <a href="controleur.php?page=documents&action=uploadedToday">Créer</a>
+    {% if session.role_id in [1, 2] %}
+        <a href="controleur.php?page=documents&action=uploadedToday" class="btn btn-primary">Créer</a>
     {% endif %}
 
     <form method="POST" action="controleur.php?page=documents&action=read">
-        <label for="limit">Documents par page :</label>
-        <select id="limit" name="limit">
-            <option value="200" {% if limit == 200 %}selected{% endif %}>200</option>
-            <option value="400" {% if limit == 400 %}selected{% endif %}>400</option>
-            <option value="500" {% if limit == 500 %}selected{% endif %}>500</option>
-        </select>
-        <label for="page">Page :</label>
-        <select id="page" name="page">
-            {% for i in 1..totalPages %}
-                <option value="{{ i }}" {% if i == page %}selected{% endif %}>{{ i }}</option>
-            {% endfor %}
-        </select>
-
-        <!-- Filtre par date -->
         <label for="date">Année :</label>
         <select id="date" name="date">
             <option value="">Toutes les années</option>
             {% for year in availableDates %}
-                <option value="{{ year }}">{{ year }}</option>
+                <option value="{{ year|e }}">{{ year|e }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="Appliquer">
     </form>
 
-    <!-- Formulaire de recherche -->
-    <input type="text" id="search" placeholder="Rechercher...">
+    <input type="text" id="search" placeholder="Rechercher..." aria-label="Rechercher">
+   
+    <div class="flex justify-start mt-4 space-x-4">
+        {% for type_doc, label in {1: 'Analyse', 2: 'Synthèse', 3: 'Rapport Eau', 4: 'Rapport ASS', 5: 'Rapport ANC', 6: 'Rapport GCE'} %}
+            {% set color_class = type_doc == 1 ? 'black' : type_doc == 2 ? 'yellow' : type_doc == 3 ? 'blue-500' : type_doc == 4 ? 'amber-900' : type_doc == 5 ? 'pink-200' : 'green-500' %}
+            <button class="document-type-btn px-4 py-2 text-white bg-{{ color_class }} rounded hover:bg-opacity-80" data-type="{{ type_doc }}">{{ label }}</button>
+        {% endfor %}
+    </div>
+    
 
-    {% for category in allCategories %}
-        <input type="checkbox" class="category-checkbox" id="{{ category.label_type_doc }}" name="{{ category.label_type_doc }}" checked>
-        <label for="{{ category.label_type_doc }}">Afficher {{ category.label_type_doc }}</label>
-    {% endfor %}
-
-    {% for category_name, documents in documentsByCategory %}
-        <div class="category" data-category="{{ category_name }}">
-            <h4>Catégorie : {{ category_name }}</h4>
-            {% for document in documents %}
-                <div class="document" data-title="{{ document.titre }}">
-                    <p>ID: {{ document.idt_doc }}</p>
-                    <p>Titre: {{ document.titre }}</p>
-                    {% if session.role_id == 1 or session.role_id == 2 %}
-                        <a href="controleur.php?page=documents&action=read&id={{ document.idt_doc }}">Voir</a>
-                        <a href="controleur.php?page=documents&action=update&id={{ document.idt_doc }}">Modifier</a>
-                        <a href="controleur.php?page=documents&action=delete&id={{ document.idt_doc }}">Supprimer</a>
-                    {% endif %}
-                </div>
-            {% endfor %}
+    <div class="mt-2 w-full h-5/6 flex justify-center items-center">
+        <div class="sm:rounded-t-lg mb-4">
+            <table class="w-full text-sm text-left rtl:text-right " id="documents-container">
+                <thead class=" text-xs uppercase bg-gray-200  ">
+                    <tr>
+                        <th scope="col" class="px-6 py-4">
+                            Id
+                        </th>
+                        <th scope="col" class="px-6 py-4">
+                            Nom
+                        </th>
+                        <th scope="col" class="px-6 py-4">
+                            Code Postal
+                        </th>
+                        <th scope="col" class="px-6 py-4">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category_name, documents in documentsByCategory %}
+                        {% for document in documents %}
+                            <tr class="document-item hidden odd:bg-neutral-50 even:bg-gray-100" data-type="{{ document.type_doc }}">
+                                <td class="px-6 py-4">{{ document.idt_doc|e }}</td>
+                                <td class="px-6 py-4">{{ document.titre|e }}</td>
+                                <td class="px-6 py-4">{{ document.link|e }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-block w-4 h-4 rounded-full text-center text-white px-2 bg-{{ document.type_doc == 1 ? 'black' : document.type_doc == 2 ? 'yellow' : document.type_doc == 3 ? 'blue-500' : document.type_doc == 4 ? 'amber-900' : document.type_doc == 5 ? 'pink-200' : 'green-500' }}" data-type="{{ document.type_doc }}"></span>
+                                </td>
+                                <td class="px-6 py-4"><!-- Actions à définir ici --></td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    {% endfor %}
+    </div>
+
+    <div class="pagination flex justify-between items-center mt-4">
+        <div class="w-40 flex items-center justify-between">
+            <button id="prev-btn" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.4415 4.94L9.50146 4L5.50146 8L9.50146 12L10.4415 11.06L7.38813 8L10.4415 4.94Z" fill="blue" fill-opacity="0.54"/>
+                </svg>
+            </button>
+            <span id="page-indicator" class="text-xs"></span>
+            <button id="next-btn" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.83453 4L5.89453 4.94L8.94786 8L5.89453 11.06L6.83453 12L10.8345 8L6.83453 4Z" fill="blue" fill-opacity="0.54"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="flex items-center">
+            <label for="page-select" class="mr-2 text-xs">Aller à la page :</label>
+            <input type="number" id="page-select" min="1" max="1" value="1" class="w-10 border border-blue-300 rounded px-2 py-1">
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="path/to/your/external.js"></script>
     <script>
-        var titles = [];
-        {% for category_name, documents in documentsByCategory %}
-            {% for document in documents %}
-                titles.push("{{ document.titre }}");
+        $(document).ready(function() {
+            const itemsPerPage = 10;
+            const items = $(".document-item");
+            const totalPages = Math.ceil(items.length / itemsPerPage);
+            let currentPage = 1;
+        
+            function showPage(page) {
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+        
+                items.hide();
+                items.slice(start, end).show();
+        
+                $("#page-indicator").text(`Page ${page} / ${totalPages}`);
+                $("#page-select").val(page);
+                $("#page-select").attr("max", totalPages);
+            }
+        
+                        // Cacher tous les documents au chargement de la page
+            items.hide();
+        
+            // Afficher seulement les documents de la première page
+            showPage(currentPage);
+
+            // Filtrer les documents lorsqu'un bouton de type de document est cliqué
+                        // Filtrer les documents lorsqu'un bouton de type de document est cliqué
+                        // Filtrer les documents lorsqu'un bouton de type de document est cliqué
+            $(".document-type-btn").click(function() {
+            const type = $(this).data("type");
+            const typeClass = `document-type-${type}`;
+            const $itemsOfType = $(`.document-item[data-type="${type}"]`);
+
+            if ($itemsOfType.hasClass(typeClass)) {
+                // Supprimer la classe spécifique du type de document
+                $itemsOfType.removeClass(typeClass);
+                // Afficher seulement les documents du type sélectionné qui sont sur la page actuelle
+                showPage(currentPage);
+            } else {
+                // Ajouter la classe spécifique du type de document
+                $itemsOfType.addClass(typeClass);
+                // Cacher tous les documents du type sélectionné
+                $itemsOfType.hide();
+                // Désactiver tous les boutons de type de document
+                $(".document-type-btn").removeClass("active");
+                // Activer le bouton de type de document sélectionné
+                $(this).addClass("active");
+            }
+        });
+
+
+
+            $("#prev-btn").click(function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            $("#next-btn").click(function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            $("#page-select").change(function() {
+                const selectedPage = parseInt($(this).val(), 10);
+                if (selectedPage >= 1 && selectedPage <= totalPages) {
+                    currentPage = selectedPage;
+                    showPage(currentPage);
+                } else {
+                    $(this).val(currentPage);
+                }
+            });
+
+            var titles = [];
+            {% for category_name, documents in documentsByCategory %}
+                {% for document in documents %}
+                    titles.push("{{ document.titre|e }}");
+                    // Ajouter l'attribut data-type à chaque ligne du tableau
+                    $(".document-item").last().attr("data-type", "{{ document.type_doc }}");
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
 
-        $("#search").autocomplete({
-            source: titles
-        });
-
-        document.querySelectorAll('.category-checkbox').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                var category = this.id;
-                document.querySelectorAll('.category').forEach(function(categoryDiv) {
-                    if (categoryDiv.getAttribute('data-category') === category) {
-                        categoryDiv.style.display = checkbox.checked ? 'block' : 'none';
-                    }
-                });
+        
+            $("#search").autocomplete({
+                source: titles,
+                select: function(event, ui) {
+                    // Cacher tous les documents
+                    items.hide();
+            
+                    // Afficher seulement le document sélectionné
+                    items.filter(function() {
+                        return $(this).find('td:nth-child(2)').text() === ui.item.value;
+                    }).show();
+                }
             });
         });
-
-        document.getElementById('search').addEventListener('input', function() {
-            var searchValue = this.value.toLowerCase();
-            document.querySelectorAll('.document').forEach(function(documentDiv) {
-                var title = documentDiv.getAttribute('data-title').toLowerCase();
-                documentDiv.style.display = title.includes(searchValue) ? 'block' : 'none';
-            });
-        });
-
+        
     </script>
+
 {% endblock %}
