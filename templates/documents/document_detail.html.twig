@@ -1,16 +1,123 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h2>Vous êtes sur le document : {{ documents.titre }}</h2> <!-- Affiche le nom du document -->
-<p>Le document a été créé le {{ documents.date_doc|date('d/m/Y') }}</p>
-<p>Le chemin du document : {{ documents.link }}</p>
+<div class="p-4 flex justify-between items-center">
+    <div class="flex justify-center items-center">
+        <svg width="27" height="27" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.25 14.1111V32.2778H4V14.1111L17.625 2L31.25 14.1111Z" stroke="#4B515D" stroke-width="2.14697"
+                stroke-linejoin="round" />
+            <path
+                d="M4 17.139H31.25M9.29861 9.56958V32.2779M25.9514 9.56958V32.2779M14.5972 23.1946H20.6528V32.2779H14.5972V23.1946Z"
+                stroke="#4B515D" stroke-width="2.14697" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <h1 class="text-2xl font-bold mt-1 ml-2">Détails de la commune</h1>
+    </div>
 
-<h2>Communes liées</h2>
+    <div class="flex justify-between items-center">
+        {% if session.username is defined %}
+        <div class="mr-2">
+            <p>{{session.username}}</p>
+            <div class="flex flex-row-reverse">
+                {% if session.role_id == 1 %}
+                <p class="text-zinc-600 text-xs font-light">Admin</p>
+                {% else %}
+                <p>Gestionnaire</p>
+                {% endif %}
+            </div>
+        </div>
+        <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+        {% endif %}
+    </div>
+</div>
+
+<main class="w-full h-5/6 flex justify-center items-start mt-4">
+    <div class="mt-2 w-11/12 h-4/6 flex justify-between items-start">
+        <div class="w-5/12 py-4 px-4 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+            <div>
+                <h3 class="text-xl font-bold mb-4">{{ documents.titre }}</h3>
+                <p class="mb-4">Le document a été créé le {{ documents.date_doc|date('d/m/Y') }}</p>
+                <p class="mb-8">Le chemin du document : {{ documents.link }}</p>
+                <a href="controleur.php?page=documents&action=update&id={{documents.idt_doc}}"
+                    class=" mr-2 px-4 py-2 text-green-600 rounded hover:bg-green-600 hover:text-white border border-green-600 transition duration-200 cursor-pointer">Modifier
+                    le rapport</a>
+                <a href="controleur.php?page=documents&action=delete&id={{documents.idt_doc}}"
+                    class=" mr-2 px-4 py-2 text-red-600 rounded hover:bg-red-600 border hover:text-white border-red-600 transition duration-200 cursor-pointer">Supprimer
+                    le rapport</a>
+            </div>
+
+        </div>
+        <div class="w-6/12 p-4 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+            <h2 class="text-xl font-bold">Commune(s) associée au document :</h2>
+            <div class="sm:rounded-t-lg mb-4">
+                <table class="w-full text-sm text-left rtl:text-right ">
+                    <thead class=" text-xs uppercase bg-gray-200  ">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                Id
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Nom
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Code postal
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for commune in asr %}
+                        <tr class="commune-item odd:bg-neutral-50 even:bg-gray-100" data-category="{{ category_name }}">
+                            <td class="px-6 py-4">
+                                {{ commune.idt_asr }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ commune.nom }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ commune.cp }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="controleur.php?page=asr&action=read&id={{ commune.idt_asr }}"
+                                    label="consulter">
+                                    <div
+                                        class="w-6 h-6 border border-blue-300 rounded flex justify-center items-center hover:bg-blue-50 transition duration-200">
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_273_132)">
+                                                <path
+                                                    d="M14.7967 7.17778C14.9775 7.4033 15.0777 7.69628 15.0777 8.00007C15.0777 8.30385 14.9775 8.59684 14.7967 8.82235C13.6512 10.2092 11.0439 12.9092 8.00028 12.9092C4.95664 12.9092 2.34937 10.2092 1.20391 8.82235C1.023 8.59684 0.922852 8.30385 0.922852 8.00007C0.922852 7.69628 1.023 7.4033 1.20391 7.17778C2.34937 5.79094 4.95664 3.09091 8.00028 3.09091C11.0439 3.09091 13.6512 5.79094 14.7967 7.17778Z"
+                                                    stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path
+                                                    d="M8.00018 10.1818C9.20516 10.1818 10.182 9.20499 10.182 8.00001C10.182 6.79502 9.20516 5.81819 8.00018 5.81819C6.79519 5.81819 5.81836 6.79502 5.81836 8.00001C5.81836 9.20499 6.79519 10.1818 8.00018 10.1818Z"
+                                                    stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round" />
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0_273_132">
+                                                    <rect width="15.2727" height="15.2727" fill="white"
+                                                        transform="translate(0.36377 0.363632)" />
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+                                    </div>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+{# <h2>Communes liées</h2>
 <ul>
     {% for commune in asr %}
     <li>{{ commune.nom }}</li>
     {% endfor %}
 </ul>
 <a href="controleur.php?page=documents&action=update&id={{ documents.idt_doc }}">Modifier</a>
-<a href="controleur.php?page=documents&action=delete&id={{ documents.idt_doc }}">Supprimer</a>
+<a href="controleur.php?page=documents&action=delete&id={{ documents.idt_doc }}">Supprimer</a> #}
 {% endblock %}

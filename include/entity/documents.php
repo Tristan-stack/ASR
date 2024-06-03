@@ -125,7 +125,7 @@ class Documents{
     
     static function create($titre, $link, $type_doc, $date_doc, $idt_doc){
         echo 'create';
-        var_dump($titre, $link, $type_doc, $date_doc, $idt_doc); // Vérifiez les valeurs des paramètres
+        // var_dump($titre, $link, $type_doc, $date_doc, $idt_doc); // Vérifiez les valeurs des paramètres
         $sql = 'INSERT INTO documents (idt_doc, titre, link, type_doc, date_doc) VALUES (:idt_doc, :titre, :link, :type_doc, :date_doc)';
         $pdo = connexion();
         $query = $pdo->prepare($sql);

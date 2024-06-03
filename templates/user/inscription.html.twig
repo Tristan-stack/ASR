@@ -28,15 +28,13 @@
 </div>
 <main class="w-full h-2/3 flex justify-center items-center">
 
-    <form action="controleur.php?page=user&action=create" method="post" class="w-1/2 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
+    <form action="controleur.php?page=user&action=create" method="post" class="p-4 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
         <div class="w-full  flex justify-around">
             <div class="flex flex-col">
                 <label for="username" class="text-xs text-gray-500">Nom d'utilisateur:</label>
                 <input type="text" id="username" name="username" autocomplete="off" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
-            </div>
             
-            <div class="flex flex-col">
-                <label for="email" class="text-xs text-gray-500">Email:</label>
+                <label for="email" class="text-xs text-gray-500  mt-4">Email:</label>
                 <input type="email" id="email" name="email" value="@sdea.fr" pattern=".+@sdea\.fr$" autocomplete="off" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
             </div>
         </div>
@@ -49,23 +47,21 @@
                         <option value="{{ role.id }}">{{ role.role }}</option>
                     {% endfor %}
                 </select>
-            </div>
-            
-            <div class="flex flex-col">
-                <label for="password" class="text-xs text-gray-500">Mot de passe:</label>
-                <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" autocomplete="off" class="h-4/6 border border-blue-200 px-4 py-2 rounded" required>
+        
+                <label for="password" class="text-xs text-gray-500 mt-4">Mot de passe:</label>
+                <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" autocomplete="off" class="w-56  border border-blue-200 px-4 py-2 rounded" required>
             </div>
         </div>
 
-        <div class="text-sm leading-5 pl-9 my-4">
+        <div class="text-sm leading-5 my-4 ml-2">
             <p id="passwordLengthCondition" style="color: red;">6 caractères.</p>
             <p id="passwordUppercaseCondition" style="color: red;">Une majuscule.</p>
             <p id="passwordNumberCondition" style="color: red;">1 chiffre.</p>
             <p id="passwordSpecialCondition" style="color: red;">1 caractère spécial.</p>
         </div>
         <div class="w-full flex justify-between">
-            <input type="submit" value="S'inscrire" class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">
-            <a href="controleur.php?page=home" class="mr-9 px-4 py-2 text-red-600 rounded hover:bg-red-50 border border-red-300 transition duration-200 cursor-pointer">Retour à l'accueil</a>
+            <a href="controleur.php?page=home" class="px-4 py-2 m-2 text-red-600 rounded hover:bg-red-50 border border-red-300 transition duration-200 cursor-pointer">Retour à l'accueil</a>
+            <input type="submit" value="Créer le compte" class=" m-2 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">
         </div>
     </form>
 </main>

@@ -339,7 +339,7 @@ switch($page){
 
 
             case 'uploadedToday':
-                var_dump($_POST);
+                // var_dump($_POST);
                 $types = Documents::getAllTypes();
                 $asr = Asr::readAll();
                 $folder = $_POST['folder'] ?? null; 
@@ -360,7 +360,7 @@ switch($page){
                         }
 
                         if (isset($_POST['communes']) && is_array($_POST['communes'])) {
-                            var_dump($_POST['communes']);
+                            // var_dump($_POST['communes']);
                             Docrelation::createMultiple($idt_doc, $_POST['communes']);
                         }
                     }
