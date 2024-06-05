@@ -3,15 +3,45 @@
 {% block title %}Mettre à jour une catégorie{% endblock %}
 
 {% block body %}
-    <h1>Mettre à jour une catégorie</h1>
+<div class="p-4 flex justify-between items-center">
+    <div class="flex justify-center items-center">
+        <svg width="27" height="27" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.25 14.1111V32.2778H4V14.1111L17.625 2L31.25 14.1111Z" stroke="#4B515D" stroke-width="2.14697"
+                stroke-linejoin="round" />
+            <path
+                d="M4 17.139H31.25M9.29861 9.56958V32.2779M25.9514 9.56958V32.2779M14.5972 23.1946H20.6528V32.2779H14.5972V23.1946Z"
+                stroke="#4B515D" stroke-width="2.14697" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <h1 class="text-2xl font-bold mt-1 ml-2">Modifier une categorie</h1>
+    </div>
 
-    <form action="controleur.php?page=categories&action=update" method="post">
+    <div class="flex justify-between items-center">
+        {% if session.username is defined %}
+        <div class="mr-2">
+            <p>{{session.username}}</p>
+            <div class="flex flex-row-reverse">
+                {% if session.role_id == 1 %}
+                <p class="text-zinc-600 text-xs font-light">Admin</p>
+                {% else %}
+                <p>Gestionnaire</p>
+                {% endif %}
+            </div>
+        </div>
+        <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+        {% endif %}
+    </div>
+</div>
+
+<div class="w-full h-5/6 flex justify-center items-center">
+
+    <form action="controleur.php?page=categories&action=update" method="post" class="p-8 border-gray-200 bg-neutral-50 rounded-md shadow-lg">
         <input type="hidden" name="idt" value="{{ categories.idt }}">
-        <div class="form-group">
-            <label for="label_type_doc">Label de la catégorie</label>
-            <input type="text" id="label_type_doc" name="label_type_doc" class="form-control" value="{{ categories.label_type_doc }}" required>
+        <div class="form-group form-group flex flex-col mb-4">
+            <label for="label_type_doc" class="text-base font-semibold mb-2">Label de la catégorie :</label>
+            <input type="text" id="label_type_doc" name="label_type_doc" class="form-control p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200" value="{{ categories.label_type_doc }}" required>
         </div>
 
-        <button type="submit">Mettre à jour</button>
+        <button type="submit" class=" px-4 py-2 text-green-600 rounded hover:bg-green-50 border border-green-600 transition duration-200 cursor-pointer">Mettre à jour</button>
     </form>
+</div>
 {% endblock %}

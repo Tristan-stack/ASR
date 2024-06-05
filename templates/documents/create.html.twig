@@ -28,58 +28,61 @@
 </div>
 <main class="mt-2 w-full h-5/6 flex justify-center items-center">
 
-    <section class="w-1/3 p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+    <section class=" flex  p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
 
-        <h1 class="text-lg font-bold mb-4">Détection de fichiers</h1>
-    
-        <form action="" method="post">
-            <input type="hidden" name="page" value="documents">
-            <input type="hidden" name="action" value="uploadedToday">
-    
-            <div class="flex flex-col justify-between items-start">
+        <div class="mr-8 flex flex-col justify-between items-between">
+
+            <h1 class="text-lg font-bold mb-4">Détection de fichiers</h1>
         
-                <label for="folder" class="text-base font-semibold mb-4">Sélectionnez un dossier :</label>
-
-                <div>
-                    
-                    <select name="folder" id="folder" class="p-2 text-blue-600 rounded border border-blue-300">
-                        <option value="ASS">ASS</option>
-                        <option value="REP">REP</option>
-                        <option value="GCE">GCE</option>
-                        <option value="ANC">ANC</option>
-                        <option value="Synthese">Synthese</option>
-                        <option value="Analyse">Analyse</option>
-                    </select>
+            <form action="" method="post">
+                <input type="hidden" name="page" value="documents">
+                <input type="hidden" name="action" value="uploadedToday">
+        
+                <div class="flex flex-col justify-between items-start">
             
-                    <input type="submit" value="Détecter" class=" mb-4 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-600 transition duration-200 cursor-pointer">
+                    <label for="folder" class="text-base font-semibold mb-4">Sélectionnez un dossier :</label>
+    
+                    <div>
+                        
+                        <select name="folder" id="folder" class="p-2 text-blue-600 rounded border border-blue-300">
+                            <option value="ASS">ASS</option>
+                            <option value="REP">REP</option>
+                            <option value="GCE">GCE</option>
+                            <option value="ANC">ANC</option>
+                            <option value="Synthese">Synthese</option>
+                            <option value="Analyse">Analyse</option>
+                        </select>
+                
+                        <input type="submit" value="Détecter" class=" mb-4 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-600 transition duration-200 cursor-pointer">
+                    </div>
+               
                 </div>
-           
-            </div>
-        </form>
-    
-        <h2 class="text-base font-semibold mb-4">Nouveaux fichiers</h2>
-    
-        {% if uploadedToday is empty %}
-            <p>Aucun fichier n'a été téléchargé aujourd'hui.</p>
-        {% else %}
-            <table class="w-full mb-4 text-sm text-left rtl:text-right">
-                <thead class=" text-xs uppercase bg-gray-200  ">
-                    <th scope="col" class="px-6 py-4">Nom</th>
-                    <th scope="col" class="px-6 py-4">Lien</th>
-                </thead>
-                <tbody>
-                    {% for file in uploadedToday %}
-                        <tr class="file-path odd:bg-neutral-50 even:bg-gray-100 " data-path="{{ file.path }}">
-                            <td class="px-6 py-4">{{ file.name }}</td>
-                            {# <td class="px-6 py-4">{{ file.path }}</td> #}
-                            <td class="px-6 py-4">
-                                <button id="select" class="edit-btn mr-2 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-600 transition duration-200 cursor-pointer">Selectionner</button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+            </form>
+        
+            <h2 class="text-base font-semibold mb-4">Nouveaux fichiers</h2>
+        
+            {% if uploadedToday is empty %}
+                <p>Aucun fichier n'a été téléchargé aujourd'hui.</p>
+            {% else %}
+                <table class="w-full mb-4 text-sm text-left rtl:text-right">
+                    <thead class=" text-xs uppercase bg-gray-200  ">
+                        <th scope="col" class="px-6 py-4">Nom</th>
+                        <th scope="col" class="px-6 py-4">Lien</th>
+                    </thead>
+                    <tbody>
+                        {% for file in uploadedToday %}
+                            <tr class="file-path odd:bg-neutral-50 even:bg-gray-100 " data-path="{{ file.path }}">
+                                <td class="px-6 py-4">{{ file.name }}</td>
+                                {# <td class="px-6 py-4">{{ file.path }}</td> #}
+                                <td class="px-6 py-4">
+                                    <button id="select" class="edit-btn mr-2 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-600 transition duration-200 cursor-pointer">Selectionner</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
 
 
 
@@ -90,30 +93,38 @@
             </ul> #}
         
     
-        <form action="controleur.php?page=documents&action=uploadedToday" method="post">
+        <form action="controleur.php?page=documents&action=uploadedToday" method="post" class="flex flex-col justify-between items-between">
             
             <input type="hidden" id="selectedFilePath" name="link"   readonly>
     
             <label for="type_doc" hidden >Type de document :</label>
             <input type="hidden" type="text" id="type_doc" name="type_doc"  readonly>
             
-            <div class="flex flex-col mb-4 items-start">
-                <label for="titre" class="text-base font-semibold mb-2" >Titre du document :</label>
-                <input type="text" id="titre" name="titre" class="p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
-            </div>
-    
-            <input type="hidden" name="date_doc" value="{{ 'now'|date('Y-m-d') }}">
-            
-            <div class="flex justify-between">
-                <div class="flex flex-col items-start">
-                    <label for="communeSearch" class="text-base font-semibold mb-2">Recherchez une commune :</label>
-                    <input type="text" id="communeSearch" class="p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
-                    <button type="button" id="addCommune" class=" my-4 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-600 transition duration-200 cursor-pointer">Ajouter la commune</button>
+            <div class="flex flex-row mb-4 items-start">
+                <div class="flex flex-col mr-4">
+                    <label for="titre" class="text-base font-semibold mb-2" >Titre du document :</label>
+                    <input type="text" id="titre" name="titre" class="p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                    <div class="mt-4">
+                        <h2 class="text-base font-semibold mb-2 ">Communes sélectionnées :</h2>
+                        <ul id="selectedCommunes" ></ul>
+                    </div>
                 </div>
-
+                
+                
+                <input type="hidden" name="date_doc" value="{{ 'now'|date('Y-m-d') }}">
+                
                 <div class="flex flex-col">
-                    <h2>Communes sélectionnées</h2>
-                    <ul id="selectedCommunes"></ul>
+                    <label for="communeSearch" class="text-base font-semibold mb-2">Recherchez une commune :</label>
+                    <div class="flex items-center ">
+                        <input type="text" id="communeSearch" class="p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                        <button type="button" id="addCommune" class=" ml-2 p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-600 transition duration-200 cursor-pointer">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="blue"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    
                 </div>
     
             </div>
@@ -229,9 +240,24 @@
     
             var li = document.createElement('li');
             li.textContent = communeName;
+            li.className = "mr-4 mb-4 flex items-center" ;
     
             var deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Supprimer';
+            deleteButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_177_1489)">
+                <path d="M1.45459 4.18213H14.5455" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3.09094 4.18213H12.9091V14.0003C12.9091 14.2896 12.7941 14.5671 12.5896 14.7717C12.3851 14.9762 12.1075 15.0912 11.8182 15.0912H4.18185C3.89252 15.0912 3.61505 14.9762 3.41046 14.7717C3.20588 14.5671 3.09094 14.2896 3.09094 14.0003V4.18213Z" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5.27283 4.18191V3.63645C5.27283 2.91314 5.56016 2.21944 6.07162 1.70798C6.58309 1.19652 7.27678 0.90918 8.0001 0.90918C8.72342 0.90918 9.41711 1.19652 9.92858 1.70798C10.44 2.21944 10.7274 2.91314 10.7274 3.63645V4.18191" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6.36365 7.45605V11.8214" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.63635 7.45605V11.8214" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_177_1489">
+                <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.363647 0.36377)"/>
+                </clipPath>
+                </defs>
+            </svg>`;
+            deleteButton.className = "ml-4 p-1 text-red-600 rounded hover:bg-red-50 border border-red-600 transition duration-200 cursor-pointer";
             deleteButton.addEventListener('click', function() {
                 li.remove();
                 // Supprimer l'input correspondant lorsque la commune est supprimée
