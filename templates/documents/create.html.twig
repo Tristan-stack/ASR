@@ -224,15 +224,27 @@
     
         $('#communeSearch').autocomplete({
             source: communes,
+            autoFocus: true, // Empêche la saisie manuelle et sélectionne automatiquement le premier élément de la liste
             select: function(event, ui) {
-                // Stocker l'ID de la commune sélectionnée dans un attribut de données
-                $(this).data('communeId', ui.item.value);
-                // Mettre à jour la valeur de l'input avec le nom de la commune
-                $(this).val(ui.item.label);
-                // Empêcher l'événement par défaut de mettre à jour la valeur de l'input avec l'ID de la commune
-                event.preventDefault();
+                var selectedCommune = ui.item.value;
+                var isValidCommune = communes.some(function(commune) {
+                    return commune.value === selectedCommune;
+                });
+
+                if (isValidCommune) {
+                    // Stocker l'ID de la commune sélectionnée dans un attribut de données
+                    $(this).data('communeId', ui.item.value);
+                    // Mettre à jour la valeur de l'input avec le nom de la commune
+                    $(this).val(ui.item.label);
+                    // Empêcher l'événement par défaut de mettre à jour la valeur de l'input avec l'ID de la commune
+                    event.preventDefault();
+                } else {
+                    // Afficher un message d'erreur ou une indication à l'utilisateur
+                    alert("Veuillez sélectionner une commune valide.");
+                }
             }
         });
+        
     
         document.getElementById('addCommune').addEventListener('click', function() {
             var communeName = $('#communeSearch').val();

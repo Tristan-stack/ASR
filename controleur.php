@@ -476,17 +476,30 @@ switch($page){
 
             case 'update':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $id = $_POST['idt'] ?? null; // Obtenez l'ID de la catégorie à partir des données POST
-                    $label_type_doc = $_POST['label_type_doc'] ?? null; // Obtenez le nouveau label à partir des données POST
-                    $categories = new Categories($id, $label_type_doc); // Créez un nouvel objet Categories avec cet ID et ce label
-                    if (!empty($categories->label_type_doc)) {
-                        $categories->update(); // Mettez à jour la catégorie
-                        //var_dump($categories);
-                        header('Location: controleur.php?page=categories&action=read');
-                        exit();
-                    } else {
-                        echo "Veuillez remplir tous les champs.";
+                    // Check if the request is JSON
+                    $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+                    if ($contentType === "application/json") {
+                        // Receive the RAW post data.
+                        $content = trim(file_get_contents("php://input"));
+                        $decoded = json_decode($content, true);
+
+                        // Make sure that the json data is valid.
+                        if (is_array($decoded)) {
+                            $id = $decoded['id'] ?? null; // Obtenez l'ID de la catégorie à partir des données JSON
+                            $label_type_doc = $decoded['label'] ?? null; // Obtenez le nouveau label à partir des données JSON
+
+                            if ($id && $label_type_doc) {
+                                $categories = new Categories($id, $label_type_doc); // Créez un nouvel objet Categories avec cet ID et ce label
+                                if (!empty($categories->label_type_doc)) {
+                                    $categories->update(); // Mettez à jour la catégorie
+                                    echo json_encode(['status' => 'success']);
+                                    exit();
+                                }
+                            }
+                        }
                     }
+                    echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+                    exit();
                 } else {
                     $id = $_GET['id'] ?? null;
                     $categories = Categories::readOne($id);
