@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="p-4 flex justify-between items-center">
+        <div class="flex justify-center items-center">
+            <svg width="27" height="27" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M31.25 14.1111V32.2778H4V14.1111L17.625 2L31.25 14.1111Z" stroke="#4B515D"
+                    stroke-width="2.14697" stroke-linejoin="round" />
+                <path
+                    d="M4 17.139H31.25M9.29861 9.56958V32.2779M25.9514 9.56958V32.2779M14.5972 23.1946H20.6528V32.2779H14.5972V23.1946Z"
+                    stroke="#4B515D" stroke-width="2.14697" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h1 class="text-2xl font-bold mt-1 ml-2">Notice</h1>
+        </div>
+
+        <div class="flex justify-between items-center">
+            {% if session.username is defined %}
+            <div class="mr-2">
+                <p>{{session.username}}</p>
+                <div class="flex flex-row-reverse">
+                    {% if session.role_id == 1 %}
+                    <p class="text-zinc-600 text-xs font-light">Admin</p>
+                    {% else %}
+                    <p>Gestionnaire</p>
+                    {% endif %}
+                </div>
+            </div>
+            <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+            {% endif %}
+        </div>
+    </div>
+    <main class="w-full h-full flex justify-center items-center">
+        <section class="w-9/12 p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+            <div id="carousel" class="relative ">
+                <div id="content-1" class="carousel-content">
+                    <div class="mb-4">
+                        <h2 class="mb-2">1. Se connecter sur le serveur avec FileZilla</h2>
+                        <img src="img/notice1.png" alt="" class="w-40">
+                    </div>
+                    <div>
+                        <h2 class="mb-2">2. Déplacer le fichier à mettre en ligne sur le serveur du site internet (un ou plusieurs en même temps)</h2>
+                        <img src="img/notice2.png" alt="" class="w-2/3">
+                    </div>
+                </div>
+                <div id="content-2" class="carousel-content hidden">
+                    <div class="mb-4">
+                        <h2 class="mb-2">3. Connectez-vous à votre Espace administration</h2>
+                        <img src="img/log.png" alt="" class="w-40">
+                    </div>
+                    <div>
+                        <h2 class="mb-2">4. Sélectionnez le fichier à indexer sur le site internet en cliquant une fois dessus (onglets EP/ASS/ANC)</h2>
+                        <img src="img/rapport.png" alt="" class="w-64">
+                    </div>
+                </div>
+                <div id="content-3" class="carousel-content hidden">
+                    <div class="mb-4">
+                        <h2 class="mb-2">5. Ajouter les communes à lier au document</h2>
+                        <img src="img/comrap.png" alt="" class="w-1/2">
+                    </div>
+                    <div>
+                        <h2 class="mb-2">6. Modifiez le titre à afficher sur le site internet (par défaut « Rapport annuel 2023 »)</h2>
+                        <img src="img/comrap.png" alt="" class="w-1/2">
+                    </div>
+                </div>
+                <div id="content-4" class="carousel-content hidden">
+                    <div class="mb-4">
+                        <h2 class="mb-2">7. Document(s) enregistré(s) !</h2>
+                        <img src="img/ajout.png" alt="" class="w-1/2">
+                    </div>
+                    <div>
+                        <h2 class="mb-2">8. Fiche du document complète :</h2>
+                        <img src="img/ficheDoc.png" alt="" class="w-2/3">
+                    </div>
+                </div>
+                
+                <div class="w-full flex justify-between mt-4">
+                    <button id="prev" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.4415 4.94L9.50146 4L5.50146 8L9.50146 12L10.4415 11.06L7.38813 8L10.4415 4.94Z" fill="blue" fill-opacity="0.54"/>
+                            </svg>
+                    </button>
+                    <button id="next" class="px-1 py-1 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.83453 4L5.89453 4.94L8.94786 8L5.89453 11.06L6.83453 12L10.8345 8L6.83453 4Z" fill="blue" fill-opacity="0.54"/>
+                            </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+<script>
+    var contents = Array.from(document.getElementsByClassName('carousel-content'));
+    var currentIndex = 0;
+
+    document.getElementById('prev').addEventListener('click', function() {
+        contents[currentIndex].classList.add('hidden');
+        currentIndex = (currentIndex - 1 + contents.length) % contents.length;
+        contents[currentIndex].classList.remove('hidden');
+    });
+
+    document.getElementById('next').addEventListener('click', function() {
+        contents[currentIndex].classList.add('hidden');
+        currentIndex = (currentIndex + 1) % contents.length;
+        contents[currentIndex].classList.remove('hidden');
+    });
+</script>
+{% endblock %}

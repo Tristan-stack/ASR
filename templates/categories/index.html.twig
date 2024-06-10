@@ -67,7 +67,7 @@
                                         </svg>
                                         
                                 </div>
-                                <div id="save-{{ element.idt }}" onclick="saveRow('{{ element.idt }}')" class="action-button save px-4 py-2 border border-green-500 rounded flex justify-center items-center hover:bg-green-50 transition duration-200 hidden cursor-pointer">
+                                <div id="save-{{ element.idt }}" onclick="saveRow('{{ element.idt }}')" class="action-button save px-4 py-1 border border-green-500 rounded flex justify-center items-center hover:bg-green-50 transition duration-200 hidden cursor-pointer">
                                     <p class="text-green-600">Valider</p>
                                 </div>
                                 <div id="cancel-{{ element.idt }}" onclick="cancelEdit('{{ element.idt }}')" class="action-button cancel w-6 h-6 border border-red-500 rounded flex justify-center items-center hover:bg-red-50 transition duration-200 hidden cursor-pointer">
@@ -155,7 +155,7 @@
                 tableBody.appendChild(rows[i]);
             }
     
-            document.getElementById('page-indicator').innerText = `Page ${currentPage} of ${Math.ceil(rows.length / rowsPerPage)}`;
+            document.getElementById('page-indicator').innerText = `Page ${currentPage} sur ${Math.ceil(rows.length / rowsPerPage)}`;
             document.getElementById('page-select').value = currentPage;
             document.getElementById('page-select').max = Math.ceil(rows.length / rowsPerPage);
     

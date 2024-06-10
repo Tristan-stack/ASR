@@ -520,6 +520,12 @@ switch($page){
                 break;
         }
         break;
+    
+    case 'notice':
+        $template = 'home/notice.html.twig';
+        $data = [];
+        break;
+
 
     default:
         $template = 'home/home.html.twig';

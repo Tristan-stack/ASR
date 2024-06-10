@@ -20,10 +20,12 @@
     <body class="bg-gray-100">
         <div class="flex">
             <header>
-                {% include 'sidebar.html.twig' %}
+                {% block sidebar %}
+                    {% include 'sidebar.html.twig' %}
+                {% endblock %}
             </header>
 
-            <main class="flex-grow">
+            <main class="flex-grow h-full">
                 {% block body %}{% endblock %}
             </main>
         </div>

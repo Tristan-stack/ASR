@@ -34,17 +34,21 @@
     </div>
 
     <div class="mt-2 w-full h-5/6 flex justify-center items-center">
-        
+
         <section class="w-9/12 p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
             {% if session.role_id in [1, 2] %}
-            <a href="controleur.php?page=documents&action=uploadedToday"><h3 class="inline-block mb-4 px-4 py-2 text-green-600 rounded hover:bg-green-50 border border-green-600 transition duration-200 cursor-pointer">Ajouter un rapport</h3></a>
+            <a href="controleur.php?page=documents&action=uploadedToday">
+                <h3
+                    class="inline-block mb-4 px-4 py-2 text-green-600 rounded hover:bg-green-50 border border-green-600 transition duration-200 cursor-pointer">
+                    Ajouter un rapport</h3>
+            </a>
             {% endif %}
             <div class="  mb-4   border-solid border-b border-gray-200">
                 <div>
                     <form method="POST" action="controleur.php?page=documents&action=read"
                         class="w-full flex justify-between">
                         <div>
-                            
+
                             <select id="date" name="date" class="p-2 text-blue-600 rounded border border-blue-300">
                                 <option value="">Toutes les années</option>
                                 {% for year in availableDates %}
@@ -114,56 +118,84 @@
                                 <div class="flex flex-row">
 
                                     <a href="controleur.php?page=documents&id={{ document.idt_doc }}">
-                                        <div class="w-6 h-6 border border-blue-300 rounded flex justify-center items-center hover:bg-blue-50 transition duration-200">
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <div
+                                            class="w-6 h-6 border border-blue-300 rounded flex justify-center items-center hover:bg-blue-50 transition duration-200">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
                                                 <g clip-path="url(#clip0_273_132)">
-                                                <path d="M14.7967 7.17778C14.9775 7.4033 15.0777 7.69628 15.0777 8.00007C15.0777 8.30385 14.9775 8.59684 14.7967 8.82235C13.6512 10.2092 11.0439 12.9092 8.00028 12.9092C4.95664 12.9092 2.34937 10.2092 1.20391 8.82235C1.023 8.59684 0.922852 8.30385 0.922852 8.00007C0.922852 7.69628 1.023 7.4033 1.20391 7.17778C2.34937 5.79094 4.95664 3.09091 8.00028 3.09091C11.0439 3.09091 13.6512 5.79094 14.7967 7.17778Z" stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M8.00018 10.1818C9.20516 10.1818 10.182 9.20499 10.182 8.00001C10.182 6.79502 9.20516 5.81819 8.00018 5.81819C6.79519 5.81819 5.81836 6.79502 5.81836 8.00001C5.81836 9.20499 6.79519 10.1818 8.00018 10.1818Z" stroke="#5AB1CB" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path
+                                                        d="M14.7967 7.17778C14.9775 7.4033 15.0777 7.69628 15.0777 8.00007C15.0777 8.30385 14.9775 8.59684 14.7967 8.82235C13.6512 10.2092 11.0439 12.9092 8.00028 12.9092C4.95664 12.9092 2.34937 10.2092 1.20391 8.82235C1.023 8.59684 0.922852 8.30385 0.922852 8.00007C0.922852 7.69628 1.023 7.4033 1.20391 7.17778C2.34937 5.79094 4.95664 3.09091 8.00028 3.09091C11.0439 3.09091 13.6512 5.79094 14.7967 7.17778Z"
+                                                        stroke="#5AB1CB" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M8.00018 10.1818C9.20516 10.1818 10.182 9.20499 10.182 8.00001C10.182 6.79502 9.20516 5.81819 8.00018 5.81819C6.79519 5.81819 5.81836 6.79502 5.81836 8.00001C5.81836 9.20499 6.79519 10.1818 8.00018 10.1818Z"
+                                                        stroke="#5AB1CB" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
                                                 </g>
                                                 <defs>
-                                                <clipPath id="clip0_273_132">
-                                                <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.36377 0.363632)"/>
-                                                </clipPath>
+                                                    <clipPath id="clip0_273_132">
+                                                        <rect width="15.2727" height="15.2727" fill="white"
+                                                            transform="translate(0.36377 0.363632)" />
+                                                    </clipPath>
                                                 </defs>
-                                                </svg>
+                                            </svg>
                                         </div>
                                     </a>
                                     {% if session.username is defined %}
                                     <a href="controleur.php?page=documents&action=update&id={{ document.idt_doc }}">
-                                        <div class="w-6 h-6 mx-2 border border-green-500 rounded flex justify-center items-center hover:bg-green-50 transition duration-200">
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <div
+                                            class="w-6 h-6 mx-2 border border-green-500 rounded flex justify-center items-center hover:bg-green-50 transition duration-200">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
                                                 <g clip-path="url(#clip0_177_1499)">
-                                                <path d="M5.81815 13.7164L0.909058 15.091L2.2836 10.1819L11.2727 1.23643C11.3743 1.13253 11.4957 1.04997 11.6295 0.993603C11.7635 0.937238 11.9074 0.908203 12.0527 0.908203C12.198 0.908203 12.3419 0.937238 12.4759 0.993603C12.6097 1.04997 12.7311 1.13253 12.8327 1.23643L14.7636 3.17825C14.8658 3.27966 14.947 3.40032 15.0024 3.53325C15.0578 3.66619 15.0863 3.80878 15.0863 3.95279C15.0863 4.0968 15.0578 4.2394 15.0024 4.37233C14.947 4.50527 14.8658 4.62593 14.7636 4.72734L5.81815 13.7164Z" stroke="#02986A" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path
+                                                        d="M5.81815 13.7164L0.909058 15.091L2.2836 10.1819L11.2727 1.23643C11.3743 1.13253 11.4957 1.04997 11.6295 0.993603C11.7635 0.937238 11.9074 0.908203 12.0527 0.908203C12.198 0.908203 12.3419 0.937238 12.4759 0.993603C12.6097 1.04997 12.7311 1.13253 12.8327 1.23643L14.7636 3.17825C14.8658 3.27966 14.947 3.40032 15.0024 3.53325C15.0578 3.66619 15.0863 3.80878 15.0863 3.95279C15.0863 4.0968 15.0578 4.2394 15.0024 4.37233C14.947 4.50527 14.8658 4.62593 14.7636 4.72734L5.81815 13.7164Z"
+                                                        stroke="#02986A" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
                                                 </g>
                                                 <defs>
-                                                <clipPath id="clip0_177_1499">
-                                                <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.363647 0.36377)"/>
-                                                </clipPath>
+                                                    <clipPath id="clip0_177_1499">
+                                                        <rect width="15.2727" height="15.2727" fill="white"
+                                                            transform="translate(0.363647 0.36377)" />
+                                                    </clipPath>
                                                 </defs>
-                                            </svg>                                                    
+                                            </svg>
                                         </div>
                                     </a>
                                     {% endif %}
                                     {% if session.role_id == 1 %}
-                                        <a href="controleur.php?page=documents&action=delete&id={{ document.idt_doc }}">
-                                            <div class="w-6 h-6 border border-red-500 rounded flex justify-center items-center hover:bg-red-50 transition duration-200">
-                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <g clip-path="url(#clip0_177_1489)">
-                                                    <path d="M1.45459 4.18213H14.5455" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M3.09094 4.18213H12.9091V14.0003C12.9091 14.2896 12.7941 14.5671 12.5896 14.7717C12.3851 14.9762 12.1075 15.0912 11.8182 15.0912H4.18185C3.89252 15.0912 3.61505 14.9762 3.41046 14.7717C3.20588 14.5671 3.09094 14.2896 3.09094 14.0003V4.18213Z" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M5.27283 4.18191V3.63645C5.27283 2.91314 5.56016 2.21944 6.07162 1.70798C6.58309 1.19652 7.27678 0.90918 8.0001 0.90918C8.72342 0.90918 9.41711 1.19652 9.92858 1.70798C10.44 2.21944 10.7274 2.91314 10.7274 3.63645V4.18191" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M6.36365 7.45605V11.8214" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <path d="M9.63635 7.45605V11.8214" stroke="#EF4565" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    </g>
-                                                    <defs>
+                                    <a href="controleur.php?page=documents&action=delete&id={{ document.idt_doc }}"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+                                        <div
+                                            class="w-6 h-6 border border-red-500 rounded flex justify-center items-center hover:bg-red-50 transition duration-200">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_177_1489)">
+                                                    <path d="M1.45459 4.18213H14.5455" stroke="#EF4565"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path
+                                                        d="M3.09094 4.18213H12.9091V14.0003C12.9091 14.2896 12.7941 14.5671 12.5896 14.7717C12.3851 14.9762 12.1075 15.0912 11.8182 15.0912H4.18185C3.89252 15.0912 3.61505 14.9762 3.41046 14.7717C3.20588 14.5671 3.09094 14.2896 3.09094 14.0003V4.18213Z"
+                                                        stroke="#EF4565" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M5.27283 4.18191V3.63645C5.27283 2.91314 5.56016 2.21944 6.07162 1.70798C6.58309 1.19652 7.27678 0.90918 8.0001 0.90918C8.72342 0.90918 9.41711 1.19652 9.92858 1.70798C10.44 2.21944 10.7274 2.91314 10.7274 3.63645V4.18191"
+                                                        stroke="#EF4565" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path d="M6.36365 7.45605V11.8214" stroke="#EF4565"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M9.63635 7.45605V11.8214" stroke="#EF4565"
+                                                        stroke-linecap="round" stroke-linejoin="round" />
+                                                </g>
+                                                <defs>
                                                     <clipPath id="clip0_177_1489">
-                                                    <rect width="15.2727" height="15.2727" fill="white" transform="translate(0.363647 0.36377)"/>
+                                                        <rect width="15.2727" height="15.2727" fill="white"
+                                                            transform="translate(0.363647 0.36377)" />
                                                     </clipPath>
-                                                    </defs>
-                                                </svg>
-                                                        
-                                            </div>
-                                        </a>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                    </a>
+
                                     {% endif %}
                                 </div>
                             </td>
