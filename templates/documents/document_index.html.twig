@@ -24,7 +24,7 @@
                     {% if session.role_id == 1 %}
                     <p class="text-zinc-600 text-xs font-light">Admin</p>
                     {% else %}
-                    <p>Gestionnaire</p>
+                    <p class="text-zinc-600 text-xs font-light">Gestionnaire</p>
                     {% endif %}
                 </div>
             </div>
@@ -35,7 +35,7 @@
 
     <div class="mt-2 w-full h-5/6 flex justify-center items-center">
 
-        <section class="w-9/12 p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+        <section class="w-10/12 p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
             {% if session.role_id in [1, 2] %}
             <a href="controleur.php?page=documents&action=uploadedToday">
                 <h3

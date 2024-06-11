@@ -18,7 +18,7 @@
                     {% if session.role_id == 1 %}
                         <p class="text-zinc-600 text-xs font-light">Admin</p>
                     {% else %}
-                        <p>Gestionnaire</p>
+                        <p class="text-zinc-600 text-xs font-light">Gestionnaire</p>
                     {% endif %}
                 </div>
             </div>
@@ -93,7 +93,7 @@
             </ul> #}
         
     
-        <form action="controleur.php?page=documents&action=uploadedToday" method="post" class="flex flex-col justify-between items-between">
+        <form action="controleur.php?page=documents&action=uploadedToday" method="post" autocomplete="off" class="flex flex-col justify-between items-between">
             
             <input type="hidden" id="selectedFilePath" name="link"   readonly>
     

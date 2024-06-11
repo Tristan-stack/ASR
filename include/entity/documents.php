@@ -18,9 +18,10 @@ class Documents{
     }
 
 
-    static function readAll($page = 1, $limit = 10){
+    static function readAll(){
         $sql = 'SELECT d.*, c.label_type_doc FROM documents d 
-                LEFT JOIN categories c ON d.type_doc = c.idt';
+                LEFT JOIN categories c ON d.type_doc = c.idt
+                ORDER BY d.idt_doc DESC';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute();
@@ -82,7 +83,7 @@ class Documents{
 
     static function readByDate($year){
         $pdo = connexion();
-        var_dump($year);
+        // var_dump($year);
         
         if (empty($year)) {
             // Si aucune année n'est fournie, renvoyez tous les documents
@@ -124,7 +125,6 @@ class Documents{
 
     
     static function create($titre, $link, $type_doc, $date_doc, $idt_doc){
-        echo 'create';
         // var_dump($titre, $link, $type_doc, $date_doc, $idt_doc); // Vérifiez les valeurs des paramètres
         $sql = 'INSERT INTO documents (idt_doc, titre, link, type_doc, date_doc) VALUES (:idt_doc, :titre, :link, :type_doc, :date_doc)';
         $pdo = connexion();
@@ -137,12 +137,12 @@ class Documents{
             'date_doc' => $date_doc
         ]);
 
-        var_dump($result); // Vérifiez le résultat de l'exécution de la requête
+        // var_dump($result); // Vérifiez le résultat de l'exécution de la requête
 
         if ($result) {
             // Si la requête a réussi, retournez l'ID du document inséré
             $lastInsertId = $pdo->lastInsertId();
-            var_dump($lastInsertId); // Vérifiez l'ID du dernier document inséré
+            // var_dump($lastInsertId); // Vérifiez l'ID du dernier document inséré
             return $lastInsertId;
         }
 
