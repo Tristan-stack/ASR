@@ -1,5 +1,53 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Bienvenue sur detail compte</h1>
+<div class="p-4 flex justify-between items-center">
+    <div class="flex justify-center items-center">
+        <svg width="27" height="27" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.25 14.1111V32.2778H4V14.1111L17.625 2L31.25 14.1111Z" stroke="#4B515D" stroke-width="2.14697"
+                stroke-linejoin="round" />
+            <path
+                d="M4 17.139H31.25M9.29861 9.56958V32.2779M25.9514 9.56958V32.2779M14.5972 23.1946H20.6528V32.2779H14.5972V23.1946Z"
+                stroke="#4B515D" stroke-width="2.14697" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <h1 class="text-2xl font-bold mt-1 ml-2">Mon Compte</h1>
+    </div>
+    
+    <div class="flex justify-between items-center">
+        {% if session.username is defined %}
+        <div class="mr-2">
+            <p>{{session.username}}</p>
+            <div class="flex flex-row-reverse">
+                {% if session.role_id == 1 %}
+                <p class="text-zinc-600 text-xs font-light">Admin</p>
+                {% else %}
+                <p class="text-zinc-600 text-xs font-light">Gestionnaire</p>
+                {% endif %}
+            </div>
+        </div>
+        <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+        {% endif %}
+    </div>
+</div>
+<main class="mt-2 w-full h-96 flex justify-center items-center">
+
+    <div class=" w-1/3 py-4 px-8  border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+        <div>
+            <h2 class="text-lg font-bold mt-1">Pseudo</h2>
+            <p>{{ user.username }}</p>
+        </div>
+        <div>
+            <h2 class="text-lg font-bold mt-1">Email</h2>
+            <p>{{ user.email }}</p>
+        </div>
+        <div class="mb-4">
+            <h2 class="text-lg font-bold mt-1">Mot de passe</h2>
+            <p>********</p>
+        </div>
+
+        <a href="controleur.php?page=user&action=update&id={{ user.id }}" class=" mr-2 px-4 py-2 text-green-600 rounded hover:bg-green-600 hover:text-white border border-green-600 transition duration-200 cursor-pointer">Modifier mon compte</a>
+    </div>
+
+</main>
+
 {% endblock %}

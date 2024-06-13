@@ -10,9 +10,9 @@
                 d="M4 17.139H31.25M9.29861 9.56958V32.2779M25.9514 9.56958V32.2779M14.5972 23.1946H20.6528V32.2779H14.5972V23.1946Z"
                 stroke="#4B515D" stroke-width="2.14697" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <h1 class="text-2xl font-bold mt-1 ml-2">Détails de la commune</h1>
+        <h1 >Détails de la commune</h1>
     </div>
-
+    
     <div class="flex justify-between items-center">
         {% if session.username is defined %}
         <div class="mr-2">
@@ -32,7 +32,7 @@
 
 <main class="w-full h-5/6 flex justify-center items-start mt-4">
     <div class="mt-2 w-11/12 h-4/6 flex justify-between items-start">
-        <div class="w-5/12 py-4 px-4 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg">
+       <div class="w-5/12 py-4 px-4 border-solid border border-gray-200 bg-neutral-50 rounded-md shadow-lg"> 
             <div>
                 <h3 class="text-xl font-bold">{{ asr.nom }}</h3>
                 <p class="mt-2 text-sm">Code postal : {{ asr.cp }}</p>

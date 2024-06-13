@@ -182,6 +182,19 @@ class User{
         return $roles;
     }
 
+    public static function findByEmail($email) {
+        $sql = 'SELECT * FROM users WHERE email = :email';
+        $pdo = connexion();
+        $query = $pdo->prepare($sql);
+        $query->bindValue(':email', $email, PDO::PARAM_STR);
+        $query->execute();
+        
+        $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'User');
+        
+        $user = $query->fetch();
+        return $user;
+    }
+
     function chargePOST(){
         if (isset($_POST['id']) && !empty($_POST['id'])){
             $this->id = intval($_POST['id']);

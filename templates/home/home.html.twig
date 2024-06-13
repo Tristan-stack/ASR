@@ -4,10 +4,24 @@
 {% endblock sidebar %}
 {% block body %}
 <div class="w-full h-screen flex">
+    <div class="absolute right-4 top-2 flex justify-between items-center">
+        {% if session.username is defined %}
+        <div class="mr-2">
+            <p>{{session.username}}</p>
+            <div class="flex flex-row-reverse">
+                {% if session.role_id == 1 %}
+                <p class="text-zinc-600 text-xs font-light">Admin</p>
+                {% else %}
+                <p class="text-zinc-600 text-xs font-light">Gestionnaire</p>
+                {% endif %}
+            </div>
+        </div>
+        <img src="img/pfp.png" alt="" class="w-12 h-12 rounded-full">
+        {% endif %}
+    </div>
     <div class="w-1/2 h-full bg-no-repeat bg-center bg-cover" style="background-image: url('img/Variant3.png')">
     </div>
     <div class="w-1/2 h-full flex flex-col justify-around items-center ">
-        
         <div class="w-full h-1/2 flex flex-col justify-around items-center">
             <div class="w-2/5 flex flex-col justify-start">
                 <h2 class="text-base font-semibold mb-2">Selectionnez votre vue</h2>

@@ -3,21 +3,26 @@
 {% block body %}
 <h1>Mise à jour de l'utilisateur</h1>
 
-<form method="POST" action="controleur.php?page=user&action=update&id={{ user.id }}">
-    <label for="username">Nom d'utilisateur:</label>
-    <input type="text" id="username" name="username" value="{{ user.username }}" required>
+<div class="w-full h-5/6 flex justify-center items-center">
+    <form method="POST" action="controleur.php?page=user&action=update&id={{ user.id }}" class="p-8 border-gray-200 bg-neutral-50 rounded-md shadow-lg">
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+        <div class="form-group form-group flex flex-col mb-4">
+            <label for="username" class="text-base font-semibold mb-2">Nom d'utilisateur:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" class="form-control p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200" required>
+        </div>
+        
 
-    <label for="role_id">Rôle:</label>
-    <select name="role_id">
-        <option selected disabled>Choisissez le rôle</option>
-        {% for role in roles %}
-            <option value="{{ role.id }}" {% if role.id == user.role_id %}selected{% endif %}>{{ role.role }}</option>
-        {% endfor %}
-    </select>
+        <div class="form-group form-group flex flex-col mb-4">
+            <label for="email" class="text-base font-semibold mb-2">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" class="form-control p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200" required>
+        </div>
 
-    <input type="submit" value="Mettre à jour">
-</form>
+        <div class="form-group form-group flex flex-col mb-4">
+            <label for="password" class="text-base font-semibold mb-2">Nouveau mot de passe:</label>
+            <input type="password" id="password" name="password" class="form-control p-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200">
+        </div>
+    
+        <input type="submit" value="Mettre à jour" class=" px-4 py-2 text-green-600 rounded hover:bg-green-50 border border-green-600 transition duration-200 cursor-pointer">
+    </form>
+</div>
 {% endblock %}

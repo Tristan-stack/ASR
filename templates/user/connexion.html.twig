@@ -27,7 +27,13 @@
     </div>
 </div>
 <main class="w-full flex justify-center items-center">
-
+    
+    <div id="forgot-password" style="display: none;">
+        <label for="email">Entrez votre adresse e-mail:</label>
+        <input type="email" id="email" name="email" class="w-56 border border-blue-200 px-4 py-2 rounded">
+        <button id="send-email" class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">Envoyer l'e-mail</button>
+    </div>
+    <a href="#" id="forgot-password-link">Identifiant oublié ?</a>
     <form action="controleur.php?page=user&action=login" method="post" class="p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
         
         <div class="w-full  flex flex-col justify-around items-center mb-8">
@@ -47,6 +53,46 @@
     </form>
 </main>
 
+<script>
+    var forgotPasswordLink = document.getElementById('forgot-password-link');
+    var forgotPasswordBlock = document.getElementById('forgot-password');
+    var loginForm = document.querySelector('form[action="controleur.php?page=user&action=login"]');
+    var sendEmailButton = document.getElementById('send-email');
+
+    // Ajouter un bouton d'annulation
+    var cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Annuler';
+    cancelButton.className = 'ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer';
+    forgotPasswordBlock.appendChild(cancelButton);
+
+    cancelButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        forgotPasswordBlock.style.display = 'none';
+        loginForm.style.display = 'block';
+    });
+
+    forgotPasswordLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        forgotPasswordBlock.style.display = 'block';
+        loginForm.style.display = 'none';
+    });
+
+    sendEmailButton.addEventListener('click', function() {
+        var email = document.getElementById('email').value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'controleur.php?page=user&action=forgot', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('email=' + encodeURIComponent(email));
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                alert('Un e-mail a été envoyé à votre adresse e-mail avec vos identifiants.');
+                forgotPasswordBlock.style.display = 'none';
+                loginForm.style.display = 'block';
+            }
+        }
+    });
+</script>
 
 {% if errorMessageLog is defined %}
     <p>{{ errorMessageLog }}</p>

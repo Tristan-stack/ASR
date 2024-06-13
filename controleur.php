@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 include('include/entity/communes.php');
 
@@ -168,7 +170,36 @@ switch($page){
                     // echo "Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial et faire au moins 6 caractères.";
                 } else {
                     $user->create();
-                    header('Location: controleur.php?page=asr&action=read');
+
+                    // Envoi de l'email
+                    $mail = new PHPMailer(true);
+
+                    try {
+                        //Server settings
+                        $mail->isSMTP();                                      // Set mailer to use SMTP
+                        $mail->Host = 'in-v3.mailjet.com';                    // Specify main SMTP servers
+                        $mail->SMTPAuth = true;                               // Enable SMTP authentication
+                        $mail->Username = '54b681b6bcb8a430ea3d46fda24c11a0';             // SMTP username
+                        $mail->Password = '4906bb776e7f9fa8960f570689394695';          // SMTP password
+                        $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+                        $mail->Port = 587;                                   // TCP port to connect to
+
+                        //Recipients
+                        $mail->setFrom('tristansdea@gmail.com', 'Mailer');
+                        $mail->addAddress($user->email, $user->username);     // Add a recipient
+
+                        //Content
+                        $mail->isHTML(true);                                  // Set email format to HTML
+                        $mail->Subject = 'Votre compte est prêt !';
+                        $mail->Body    = 'Bonjour, votre compte est prêt à être utiliser. Votre username est : ' . $user->username . ' et votre mot de passe : ' . $user->password . '. Une fois connecté, merci de changer votre mot de passe temporaire par votre mot de passe personnel.';
+
+                        $mail->send();
+                        echo 'Message has been sent';
+                    } catch (Exception $e) {
+                        echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+                    }
+
+                    header('Location: controleur.php?page=admin&action=read');
                     exit();
                 }
                 break;
@@ -195,6 +226,45 @@ switch($page){
                     $data = [];
                 }
                 break;  
+
+                case 'forgot':
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $email = $_POST['email'];
+                        var_dump($email);
+                        $user = User::findByEmail($email);
+                        if ($user) {
+                            // Envoi de l'email
+                            $mail = new PHPMailer(true);
+        
+                            try {
+                                //Server settings
+                                $mail->isSMTP();                                      // Set mailer to use SMTP
+                                $mail->Host = 'in-v3.mailjet.com';                    // Specify main SMTP servers
+                                $mail->SMTPAuth = true;                               // Enable SMTP authentication
+                                $mail->Username = '54b681b6bcb8a430ea3d46fda24c11a0';             // SMTP username
+                                $mail->Password = '4906bb776e7f9fa8960f570689394695';          // SMTP password
+                                $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+                                $mail->Port = 587;                                   // TCP port to connect to
+        
+                                //Recipients
+                                $mail->setFrom('tristansdea@gmail.com', 'Mailer');
+                                $mail->addAddress($user->email, $user->username);     // Add a recipient
+        
+                                //Content
+                                $mail->isHTML(true);                                  // Set email format to HTML
+                                $mail->Subject = 'Récupération de vos identifiants';
+                                $mail->Body    = 'Bonjour, voici vos identifiants : Username : ' . $user->username . ' et Password : ' . $user->password . '.';
+        
+                                $mail->send();
+                                echo 'Message has been sent';
+                            } catch (Exception $e) {
+                                echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+                            }
+                        } else {
+                            echo "Aucun utilisateur trouvé avec cette adresse e-mail.";
+                        }
+                    }
+                    break;
                 
                 
             case 'update':
@@ -219,6 +289,9 @@ switch($page){
                         if ($_SESSION['role_id'] !== 1 ) { // Check if the current user is not an admin
                             $_SESSION['role_id'] = $user->role_id;
                         }
+                    }
+                    if (!empty($user->password)) {
+                        $newValues['password'] = $user->password;
                     }
                     if (!empty($newValues)) {
                         User::update($id, $newValues);
