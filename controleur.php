@@ -176,20 +176,20 @@ switch($page){
 
                     try {
                         //Server settings
-                        $mail->isSMTP();                                      // Set mailer to use SMTP
-                        $mail->Host = 'in-v3.mailjet.com';                    // Specify main SMTP servers
-                        $mail->SMTPAuth = true;                               // Enable SMTP authentication
-                        $mail->Username = '54b681b6bcb8a430ea3d46fda24c11a0';             // SMTP username
-                        $mail->Password = '4906bb776e7f9fa8960f570689394695';          // SMTP password
-                        $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-                        $mail->Port = 587;                                   // TCP port to connect to
+                        $mail->isSMTP();                                      
+                        $mail->Host = 'in-v3.mailjet.com';                    
+                        $mail->SMTPAuth = true;                              
+                        $mail->Username = '54b681b6bcb8a430ea3d46fda24c11a0';             
+                        $mail->Password = '4906bb776e7f9fa8960f570689394695';         
+                        $mail->SMTPSecure = 'tls';                           
+                        $mail->Port = 587;                                   
 
                         //Recipients
                         $mail->setFrom('tristansdea@gmail.com', 'Mailer');
-                        $mail->addAddress($user->email, $user->username);     // Add a recipient
+                        $mail->addAddress($user->email, $user->username);     
 
                         //Content
-                        $mail->isHTML(true);                                  // Set email format to HTML
+                        $mail->isHTML(true);                                  
                         $mail->Subject = 'Votre compte est prêt !';
                         $mail->Body    = 'Bonjour, votre compte est prêt à être utiliser. Votre username est : ' . $user->username . ' et votre mot de passe : ' . $user->password . '. Une fois connecté, merci de changer votre mot de passe temporaire par votre mot de passe personnel.';
 
@@ -238,20 +238,20 @@ switch($page){
         
                             try {
                                 //Server settings
-                                $mail->isSMTP();                                      // Set mailer to use SMTP
-                                $mail->Host = 'in-v3.mailjet.com';                    // Specify main SMTP servers
-                                $mail->SMTPAuth = true;                               // Enable SMTP authentication
-                                $mail->Username = '54b681b6bcb8a430ea3d46fda24c11a0';             // SMTP username
-                                $mail->Password = '4906bb776e7f9fa8960f570689394695';          // SMTP password
-                                $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-                                $mail->Port = 587;                                   // TCP port to connect to
+                                $mail->isSMTP();                                      
+                                $mail->Host = 'in-v3.mailjet.com';                    
+                                $mail->SMTPAuth = true;                               
+                                $mail->Username = '54b681b6bcb8a430ea3d46fda24c11a0';            
+                                $mail->Password = '4906bb776e7f9fa8960f570689394695';          
+                                $mail->SMTPSecure = 'tls';                            
+                                $mail->Port = 587;                                   
         
                                 //Recipients
                                 $mail->setFrom('tristansdea@gmail.com', 'Mailer');
-                                $mail->addAddress($user->email, $user->username);     // Add a recipient
+                                $mail->addAddress($user->email, $user->username);     
         
                                 //Content
-                                $mail->isHTML(true);                                  // Set email format to HTML
+                                $mail->isHTML(true);                                  
                                 $mail->Subject = 'Récupération de vos identifiants';
                                 $mail->Body    = 'Bonjour, voici vos identifiants : Username : ' . $user->username . ' et Password : ' . $user->password . '.';
         
@@ -274,19 +274,19 @@ switch($page){
                     $newValues = [];
                     if (!empty($user->username)) {
                         $newValues['username'] = $user->username;
-                        if ($_SESSION['role_id'] !== 1) { // Check if the current user is not an admin
+                        if ($_SESSION['role_id'] !== 1) { 
                             $_SESSION['username'] = $user->username;
                         }
                     }
                     if (!empty($user->email)) {
                         $newValues['email'] = $user->email;
-                        if ($_SESSION['role_id'] !== 1) { // Check if the current user is not an admin
+                        if ($_SESSION['role_id'] !== 1) { 
                             $_SESSION['email'] = $user->email;
                         }
                     }
                     if (!empty($user->role_id)) {
                         $newValues['role_id'] = $user->role_id;
-                        if ($_SESSION['role_id'] !== 1 ) { // Check if the current user is not an admin
+                        if ($_SESSION['role_id'] !== 1 ) { 
                             $_SESSION['role_id'] = $user->role_id;
                         }
                     }
@@ -375,13 +375,12 @@ switch($page){
                     $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
                     $action = isset($_POST['action']) ? $_POST['action'] : 'read';
                     
-                    // Check if a date was sent by the form
                     if (isset($_POST['date']) && !empty($_POST['date'])) {
                         $year = $_POST['date']; // Supposons que le formulaire envoie juste une année
                         $documents = Documents::readByDate($year);
                         // var_dump($documents);
                     } else {
-                        $documents = Documents::readAll(); // Removed $page and $limit
+                        $documents = Documents::readAll();
                     }
                     
                     $totalDocuments = Documents::countAll();
@@ -396,7 +395,6 @@ switch($page){
                     // var_dump($documentsByCategory);
                     $allCategories = Categories::readAll();
     
-                    // Récupérez les dates disponibles de votre base de données
                     $availableDates = Documents::getAvailableDates();
     
                     $template = 'documents/document_index.html.twig';
@@ -405,7 +403,7 @@ switch($page){
                         'page' => $page, 
                         'totalDocuments' => $totalDocuments, 
                         'allCategories' => $allCategories,
-                        'availableDates' => $availableDates  // Ajoutez cette ligne
+                        'availableDates' => $availableDates  
                     ];
                 }
                 break;
@@ -423,10 +421,10 @@ switch($page){
                     if (isset($_POST['titre'], $_POST['link'], $_POST['type_doc'], $_POST['date_doc'])) {
                         $titre = $_POST['titre'];
                         $link = $_POST['link'];
-                        $type_doc = strval($_POST['type_doc']); // Convertissez le type_doc en chaîne
+                        $type_doc = strval($_POST['type_doc']); 
                         $date_doc = new DateTime($_POST['date_doc']);
-                        $date_formatted = $date_doc->format('Y-m-d'); // Formattez la date au format 'Y-m-d'
-                        $idt_doc = null; // ou une autre valeur appropriée
+                        $date_formatted = $date_doc->format('Y-m-d'); 
+                        $idt_doc = null; 
 
                         if (!Documents::isPathInDatabase($link)) {
                             $idt_doc = Documents::create($titre, $link, $type_doc, $date_formatted, $idt_doc);
@@ -457,7 +455,7 @@ switch($page){
                             continue;
                         }
 
-                        $uploadedToday[] = ['name' => $file, 'path' => $filePath]; // Stockez le nom et le chemin du fichier
+                        $uploadedToday[] = ['name' => $file, 'path' => $filePath]; 
                     }
 
                     $template = 'documents/create.html.twig'; 
@@ -470,15 +468,15 @@ switch($page){
                 if (isset($_POST['id'], $_POST['titre'])) {
                     $id = $_POST['id'];
                     $titre = $_POST['titre'];
-                    // Mettez à jour les informations du document
+                    
                     Documents::update($id, $titre);
             
                     // Vérifiez si des communes ont été envoyées avec le formulaire
                     if (isset($_POST['communes']) && is_array($_POST['communes'])) {
-                        // Obtenez toutes les relations existantes
+                        
                         $existingRelations = Docrelation::getCommunesByDocument($id);
             
-                        // Créez de nouvelles relations pour les communes qui ne sont pas déjà associées au document
+                      
                         foreach ($_POST['communes'] as $commune) {
                             if (!in_array($commune, $existingRelations)) {
                                 Docrelation::create($id, $commune);
@@ -490,7 +488,7 @@ switch($page){
                     header('Location: controleur.php?page=documents&action=read&id=' . $id);
                     exit;
                 } else {
-                    // Récupérez les informations du document et des communes
+                   
                     $document = Documents::readOne($id);
                     $communes = Docrelation::getCommunesByDocument($id);
                     $allCommunes = Asr::readAll();
@@ -533,7 +531,7 @@ switch($page){
             case 'create':
                 $template = 'categories/create.html.twig';
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $idt = $_POST['idt'] ?? null; // replace 'idt' with the actual name of your input field
+                    $idt = $_POST['idt'] ?? null; 
                     $label_type_doc = $_POST['label_type_doc'] ?? null;
                     $categories = new Categories($idt, $label_type_doc);
                     $categories->chargePOST();
@@ -549,22 +547,22 @@ switch($page){
 
             case 'update':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    // Check if the request is JSON
+                    
                     $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
                     if ($contentType === "application/json") {
-                        // Receive the RAW post data.
+                        
                         $content = trim(file_get_contents("php://input"));
                         $decoded = json_decode($content, true);
 
-                        // Make sure that the json data is valid.
+                        
                         if (is_array($decoded)) {
-                            $id = $decoded['id'] ?? null; // Obtenez l'ID de la catégorie à partir des données JSON
-                            $label_type_doc = $decoded['label'] ?? null; // Obtenez le nouveau label à partir des données JSON
+                            $id = $decoded['id'] ?? null; 
+                            $label_type_doc = $decoded['label'] ?? null; 
 
                             if ($id && $label_type_doc) {
-                                $categories = new Categories($id, $label_type_doc); // Créez un nouvel objet Categories avec cet ID et ce label
+                                $categories = new Categories($id, $label_type_doc); 
                                 if (!empty($categories->label_type_doc)) {
-                                    $categories->update(); // Mettez à jour la catégorie
+                                    $categories->update(); 
                                     echo json_encode(['status' => 'success']);
                                     exit();
                                 }

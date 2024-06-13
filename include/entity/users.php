@@ -47,9 +47,9 @@ class User{
     function create(){
         $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
     
-        // Generate the date in the appropriate format
-        $dateLastAction = date('Y-m-d H:i:s'); // Replace this value with the desired date
-        $dateLastConnexion = date('Y-m-d H:i:s'); // Replace this value with the desired date
+     
+        $dateLastAction = date('Y-m-d H:i:s');
+        $dateLastConnexion = date('Y-m-d H:i:s'); 
         
         $sql = 'INSERT INTO users (username, email, password, date_last_action, date_last_connexion, role_id) VALUES (:username,:email, :password, :date_last_action, :date_last_connexion, :role_id)'; // Changed :role to :role_id
         
@@ -70,7 +70,7 @@ class User{
     static function update($id, $newValues){ 
         $user = self::readOne($id);
         if (!$user) {
-            // Handle error - user not found
+            
             return;
         }
     
@@ -137,9 +137,8 @@ class User{
         $userData = $query->fetch(PDO::FETCH_ASSOC);
         // var_dump($userData);
         
-        // Vérifiez le mot de passe avec password_verify()
+        // Vérifier le mot de passe avec password_verify()
         if ($userData && password_verify($this->password, $userData['password'])) {
-            // Si le mot de passe est correct, stockez les données de l'utilisateur dans l'objet User
             $this->id = $userData['id'];
             $this->username = $userData['username'];
             $this->email = $userData['email'];

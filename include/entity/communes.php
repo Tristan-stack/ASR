@@ -29,7 +29,7 @@ class Asr{
         $query = $pdo->prepare($sql);
         $query->execute();
         
-        // Ajoutez cette ligne ici
+    
         $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Asr');
         
         $tableau = $query->fetchAll();
@@ -42,7 +42,7 @@ class Asr{
         $query = $pdo->prepare($sql);
         $query->execute(['idt_asr' => $idt_asr]);
         
-        // Ajoutez cette ligne ici
+
         $query->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Asr');
         
         $asr = $query->fetch();

@@ -86,12 +86,12 @@ class Documents{
         // var_dump($year);
         
         if (empty($year)) {
-            // Si aucune année n'est fournie, renvoyez tous les documents
+            // Si aucune année n'est fournie, renvoyer tous les documents
             $sql = 'SELECT d.*, c.label_type_doc FROM documents d LEFT JOIN categories c ON d.type_doc = c.idt';
             $query = $pdo->prepare($sql);
             $query->execute();
         } else {
-            // Sinon, renvoyez les documents pour l'année spécifiée
+            // Sinon, renvoyer les documents pour l'année spécifiée
             $sql = 'SELECT d.*, c.label_type_doc FROM documents d LEFT JOIN categories c ON d.type_doc = c.idt WHERE YEAR(d.date_doc) = :year';
             $query = $pdo->prepare($sql);
             $query->execute(['year' => $year]);
@@ -137,12 +137,12 @@ class Documents{
             'date_doc' => $date_doc
         ]);
 
-        // var_dump($result); // Vérifiez le résultat de l'exécution de la requête
+        // var_dump($result); 
 
         if ($result) {
-            // Si la requête a réussi, retournez l'ID du document inséré
+            // Si la requête a réussi, retourner l'ID du document inséré
             $lastInsertId = $pdo->lastInsertId();
-            // var_dump($lastInsertId); // Vérifiez l'ID du dernier document inséré
+            // var_dump($lastInsertId); // Vérifier l'ID du dernier document inséré
             return $lastInsertId;
         }
 

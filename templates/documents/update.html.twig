@@ -135,19 +135,19 @@
             deleteButton.classList.add('deleteCommune');
             deleteButton.addEventListener('click', function() {
                 li.remove();
-                // Also remove the corresponding hidden input
+               
                 document.querySelector('input[name="communes[]"][value="' + communeId + '"]').remove();
             });
     
             li.appendChild(deleteButton);
     
-            // Create a hidden input for the selected commune
+           
             var hiddenInput = document.createElement('input');
             hiddenInput.type = 'hidden';
-            hiddenInput.name = 'communes[]'; // Use array syntax to send multiple values
+            hiddenInput.name = 'communes[]'; 
             hiddenInput.value = communeId;
     
-            // Append the hidden input to the form
+           
             document.querySelector('form').appendChild(hiddenInput);
     
             document.getElementById('selectedCommunes').appendChild(li);
@@ -157,7 +157,6 @@
             button.addEventListener('click', function() {
                 var communeId = this.parentElement.dataset.id;
                 this.parentElement.remove();
-                // Also remove the corresponding hidden input
                 document.querySelector('input[name="communes[]"][value="' + communeId + '"]').remove();
             });
         });
