@@ -4,8 +4,10 @@
 <div class="p-4 flex justify-between items-center">
     <div class="flex justify-center items-center">
         <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.7274 20.9471C19.2716 19.6713 18.2672 18.5439 16.8701 17.7399C15.4729 16.9358 13.7611 16.5 12 16.5C10.2389 16.5 8.52706 16.9358 7.12991 17.7399C5.73276 18.5439 4.72839 19.6713 4.27259 20.9471" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="12" cy="8.5" r="4" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+            <path
+                d="M19.7274 20.9471C19.2716 19.6713 18.2672 18.5439 16.8701 17.7399C15.4729 16.9358 13.7611 16.5 12 16.5C10.2389 16.5 8.52706 16.9358 7.12991 17.7399C5.73276 18.5439 4.72839 19.6713 4.27259 20.9471"
+                stroke="#33363F" stroke-width="2" stroke-linecap="round" />
+            <circle cx="12" cy="8.5" r="4" stroke="#33363F" stroke-width="2" stroke-linecap="round" />
         </svg>
         <h1 class="text-2xl font-bold mt-1 ml-2">Connexion</h1>
     </div>
@@ -26,31 +28,37 @@
         {% endif %}
     </div>
 </div>
-<main class="w-full flex justify-center items-center">
-    
-    <div id="forgot-password" style="display: none;">
+<main class="w-full flex flex-col justify-center items-center">
+
+    <div id="forgot-password" style="display: none;" class="p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
         <label for="email">Entrez votre adresse e-mail:</label>
         <input type="email" id="email" name="email" class="w-56 border border-blue-200 px-4 py-2 rounded">
-        <button id="send-email" class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">Envoyer l'e-mail</button>
+        <button id="send-email"
+            class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">Envoyer
+            l'e-mail</button>
     </div>
-    <a href="#" id="forgot-password-link">Identifiant oublié ?</a>
-    <form action="controleur.php?page=user&action=login" method="post" class="p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
-        
+    <form action="controleur.php?page=user&action=login" method="post"
+        class="p-8 border-solid border border-gray-200 bg-neutral-50 rounded-md py-8 shadow-lg">
+
         <div class="w-full  flex flex-col justify-around items-center mb-8">
             <div class="flex flex-col mb-4">
                 <label for="username">Nom d'utilisateur:</label>
-                <input type="text" id="username" name="username" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
+                <input type="text" id="username" name="username" class="w-56 border border-blue-200 px-4 py-2 rounded"
+                    required>
             </div>
 
             <div class="flex flex-col">
                 <label for="password">Mot de passe:</label>
-                <input type="password" id="password" name="password" class="w-56 border border-blue-200 px-4 py-2 rounded" required>
+                <input type="password" id="password" name="password"
+                    class="w-56 border border-blue-200 px-4 py-2 rounded" required>
             </div>
         </div>
-        
-        
-        <input type="submit" value="Se connecter" class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">
+
+
+        <input type="submit" value="Se connecter"
+            class="ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">
     </form>
+    <a href="#" id="forgot-password-link"  class="mt-4 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">Identifiant oublié ?</a>
 </main>
 
 <script>
@@ -65,26 +73,26 @@
     cancelButton.className = 'ml-9 px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer';
     forgotPasswordBlock.appendChild(cancelButton);
 
-    cancelButton.addEventListener('click', function(e) {
+    cancelButton.addEventListener('click', function (e) {
         e.preventDefault();
         forgotPasswordBlock.style.display = 'none';
         loginForm.style.display = 'block';
     });
 
-    forgotPasswordLink.addEventListener('click', function(e) {
+    forgotPasswordLink.addEventListener('click', function (e) {
         e.preventDefault();
         forgotPasswordBlock.style.display = 'block';
         loginForm.style.display = 'none';
     });
 
-    sendEmailButton.addEventListener('click', function() {
+    sendEmailButton.addEventListener('click', function () {
         var email = document.getElementById('email').value;
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'controleur.php?page=user&action=forgot', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('email=' + encodeURIComponent(email));
 
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 alert('Un e-mail a été envoyé à votre adresse e-mail avec vos identifiants.');
                 forgotPasswordBlock.style.display = 'none';
@@ -95,6 +103,6 @@
 </script>
 
 {% if errorMessageLog is defined %}
-    <p>{{ errorMessageLog }}</p>
+<p>{{ errorMessageLog }}</p>
 {% endif %}
 {% endblock %}

@@ -104,7 +104,7 @@ class Documents{
     }
 
     static function getAvailableDates(){
-        $sql = 'SELECT DISTINCT YEAR(date_doc) as year FROM documents ORDER BY year DESC';
+        $sql = 'SELECT DISTINCT YEAR(date_doc) as year FROM documents WHERE YEAR(date_doc) >= YEAR(CURRENT_DATE) - 5 ORDER BY year DESC';
         $pdo = connexion();
         $query = $pdo->prepare($sql);
         $query->execute();

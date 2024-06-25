@@ -49,7 +49,8 @@
                 </select>
         
                 <label for="password" class="text-xs text-gray-500 mt-4">Mot de passe:</label>
-                <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" autocomplete="off" class="w-56  border border-blue-200 px-4 py-2 rounded" required>
+                <input  type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}" autocomplete="off" class="w-56  border border-blue-200 px-4 py-2 rounded" required>
+                <button id="generate-password" class=" px-4 py-2 text-blue-600 rounded hover:bg-blue-50 border border-blue-300 transition duration-200 cursor-pointer">Générer</button>
             </div>
         </div>
 
@@ -77,6 +78,24 @@
         document.getElementById('passwordUppercaseCondition').style.color = /[A-Z]/.test(this.value) ? 'green' : 'red';
         document.getElementById('passwordNumberCondition').style.color = /\d/.test(this.value) ? 'green' : 'red';
         document.getElementById('passwordSpecialCondition').style.color = /[\W_]/.test(this.value) ? 'green' : 'red';
+    });
+
+    document.getElementById('generate-password').addEventListener('click', function(e) {
+        e.preventDefault();
+    
+        var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=';
+        var passwordLength = 10; // Augmentez la longueur du mot de passe généré
+        var password = '';
+    
+        do {
+            password = '';
+            for (var i = 0; i < passwordLength; i++) {
+                var randomNumber = Math.floor(Math.random() * chars.length);
+                password += chars.substring(randomNumber, randomNumber + 1);
+            }
+        } while ((password.match(/\d/g) || []).length < 2 || (password.match(/[\W_]/g) || []).length < 2); // Continue à générer un nouveau mot de passe jusqu'à ce qu'il contienne au moins 2 chiffres et 2 caractères spéciaux
+    
+        document.getElementById('password').value = password;
     });
 </script>
     

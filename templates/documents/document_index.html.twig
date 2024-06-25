@@ -50,9 +50,9 @@
                         <div>
 
                             <select id="date" name="date" class="p-2 text-blue-600 rounded border border-blue-300">
-                                <option value="">Toutes les années</option>
-                                {% for year in availableDates %}
-                                <option value="{{ year|e }}">{{ year|e }}</option>
+                                {% set lastFiveYears = availableDates|filter(year => year >= currentYear - 5) %}
+                                {% for year in lastFiveYears %}
+                                    <option value="{{ year|e }}">{{ year|e }}</option>
                                 {% endfor %}
                             </select>
                             <input type="submit" value="Appliquer"
@@ -65,10 +65,9 @@
 
                 </div>
                 <div class="flex justify-center mt-4 space-x-4">
-                    {% for type_doc, label in {1: 'Analyse', 2: 'Synthèse', 3: 'Rapport Eau', 4: 'Rapport ASS', 5:
+                    {% for type_doc, label in { 3: 'Rapport Eau', 4: 'Rapport ASS', 5:
                     'Rapport ANC', 6: 'Rapport GCE'} %}
-                    {% set color_class = type_doc == 1 ? 'gray-500' : type_doc == 2 ? 'rose-400' : type_doc == 3 ?
-                    'blue-500' : type_doc == 4 ? 'amber-700' : type_doc == 5 ? 'purple-400' : 'emerald-400' %}
+                    {% set color_class = type_doc == 3 ? 'blue-500' : type_doc == 4 ? 'amber-700' : type_doc == 5 ? 'purple-400' : 'emerald-400' %}
                     <button
                         class="document-type-btn  category-button mb-4 mt-2 px-4 py-2 text-dark text-xs rounded-full border border-{{ color_class }} transition duration-200"
                         data-type="{{ type_doc }}">{{ label }}</button>
@@ -77,12 +76,17 @@
 
             </div>
 
-
-
-
+            <div id="loader" style="display: none;">
+                <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                </svg>
+                <span class="sr-only">Loading...</span>
+            </div>
+            
             <div class="sm:rounded-t-lg mb-4">
-                <table class="w-full text-sm text-left rtl:text-right " id="documents-container">
-                    <thead class=" text-xs uppercase bg-gray-200  ">
+                <table class="w-full h-6/12 text-sm text-left rtl:text-right " id="documents-container">
+                    <thead class="  text-xs uppercase bg-gray-200  ">
                         <tr>
                             <th scope="col" class="px-6 py-4">
                                 Id
@@ -243,66 +247,81 @@
     <script src="path/to/your/external.js"></script>
     <script>
         $(document).ready(function () {
+            // Initialement cacher le tableau et montrer le loader
+            $('#loader').show();
+            $('#table-container').hide();
+        
+            // Montrer le tableau après 5 secondes et cacher le loader
+            setTimeout(function () {
+                $('#loader').hide();
+                $('#table-container').show();
+            }, 5000);
+        
             const itemsPerPage = 4;
             const items = $(".document-item");
             const totalPages = Math.ceil(items.length / itemsPerPage);
             let currentPage = 1;
-
+        
+            function showLoader() {
+                $("#loader").show();
+            }
+        
+            function hideLoader() {
+                $("#loader").hide();
+            }
+        
             function showPage(page) {
                 const start = (page - 1) * itemsPerPage;
                 const end = start + itemsPerPage;
-
-                items.hide();
-                items.slice(start, end).show();
-
-                $("#page-indicator").text(`Page ${page} / ${totalPages}`);
-                $("#page-select").val(page);
-                $("#page-select").attr("max", totalPages);
+        
+                showLoader();
+                setTimeout(() => {
+                    items.hide();
+                    items.slice(start, end).show();
+                    hideLoader();
+        
+                    $("#page-indicator").text(`Page ${page} / ${totalPages}`);
+                    $("#page-select").val(page);
+                    $("#page-select").attr("max", totalPages);
+                }, 500); // Simuler un délai de chargement
             }
-
+        
             // Cacher tous les documents au chargement de la page
             items.hide();
-
+        
             // Afficher seulement les documents de la première page
             showPage(currentPage);
-
-
+        
             $(".document-type-btn").click(function () {
                 const type = $(this).data("type");
                 const typeClass = `document-type-${type}`;
                 const $itemsOfType = $(`.document-item[data-type="${type}"]`);
-
+        
                 if ($itemsOfType.hasClass(typeClass)) {
-                    // Supprimer la classe spécifique du type de document
                     $itemsOfType.removeClass(typeClass);
-                    // Afficher seulement les documents du type sélectionné qui sont sur la page actuelle
                     showPage(currentPage);
                 } else {
-                    // Ajouter la classe spécifique du type de document
                     $itemsOfType.addClass(typeClass);
-                    // Cacher tous les documents du type sélectionné
                     $itemsOfType.hide();
-                    // Désactiver tous les boutons de type de document
                     $(".document-type-btn").removeClass("active");
-                    // Activer le bouton de type de document sélectionné
                     $(this).addClass("active");
                 }
             });
-
+        
             $("#prev-btn").click(function () {
                 if (currentPage > 1) {
                     currentPage--;
                     showPage(currentPage);
                 }
             });
-
+        
             $("#next-btn").click(function () {
                 if (currentPage < totalPages) {
                     currentPage++;
                     showPage(currentPage);
                 }
             });
-
+        
             $("#page-select").change(function () {
                 const selectedPage = parseInt($(this).val(), 10);
                 if (selectedPage >= 1 && selectedPage <= totalPages) {
@@ -312,31 +331,27 @@
                     $(this).val(currentPage);
                 }
             });
-
+        
             var titles = [];
             {% for category_name, documents in documentsByCategory %}
             {% for document in documents %}
             titles.push("{{ document.titre|e }}");
-            // Ajouter l'attribut data-type à chaque ligne du tableau
             $(".document-item").last().attr("data-type", "{{ document.type_doc }}");
             {% endfor %}
             {% endfor %}
-
-
+        
             $("#search").autocomplete({
                 source: titles,
                 select: function (event, ui) {
-                    // Cacher tous les documents
                     items.hide();
-
-                    // Afficher seulement le document sélectionné
                     items.filter(function () {
                         return $(this).find('td:nth-child(2)').text() === ui.item.value;
                     }).show();
                 }
             });
         });
-
+        
+        
     </script>
 
-    {% endblock %}
+{% endblock %}
