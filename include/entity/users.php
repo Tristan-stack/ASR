@@ -51,7 +51,7 @@ class User{
         $dateLastAction = date('Y-m-d H:i:s');
         $dateLastConnexion = date('Y-m-d H:i:s'); 
         
-        $sql = 'INSERT INTO users (username, email, password, date_last_action, date_last_connexion, role_id) VALUES (:username,:email, :password, :date_last_action, :date_last_connexion, :role_id)'; // Changed :role to :role_id
+        $sql = 'INSERT INTO users (username, email, password, date_last_action, date_last_connexion, role_id) VALUES (:username,:email, :password, :date_last_action, :date_last_connexion, :role_id)'; 
         
         $pdo = connexion();
         $query = $pdo->prepare($sql);
